@@ -134,14 +134,44 @@ Route::middleware('auth')->group(function () {
         });
 
     Route::prefix('admin/product')->name('admin.product.')->group(function () {
-        // Quản lý thuộc tính
-        Route::get('attribute', [AttributeController::class, 'index'])->name('attribute.index');
-        Route::post('attribute/store', [AttributeController::class, 'store'])->name('attribute.store');
 
-        // Quản lý giá trị thuộc tính
-        Route::post('attribute-value/store', [AttributeController::class, 'storeValue'])->name('attribute.storeValue');
-        Route::get('attribute-value/destroy/{id}', [AttributeController::class, 'destroyValue'])->name('attribute.destroyValue');
+    /*
+    |--------------------------------------------------------------------------
+    | ATTRIBUTES (Thuộc tính gốc: Màu sắc, Size, Chất liệu...)
+    |--------------------------------------------------------------------------
+    */
+
+        // Danh sách thuộc tính
+        Route::get('attributes', [AttributeController::class, 'index'])
+            ->name('attributes.index');
+
+        // Tạo thuộc tính mới
+        Route::post('attributes', [AttributeController::class, 'store'])
+            ->name('attributes.store');
+
+        // (Optional – dùng sau này)
+        // Route::put('attributes/{attribute}', [AttributeController::class, 'update'])
+        //     ->name('attributes.update');
+
+        // Route::delete('attributes/{attribute}', [AttributeController::class, 'destroy'])
+        //     ->name('attributes.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ATTRIBUTE VALUES (Giá trị thuộc tính: Đỏ, Xanh, L, XL...)
+    |--------------------------------------------------------------------------
+    */
+
+        // Thêm giá trị cho 1 thuộc tính cụ thể
+        Route::post('attributes/{attribute}/values', [AttributeController::class, 'storeValue'])
+            ->name('attributes.values.store');
+
+        // Xóa 1 giá trị thuộc tính
+        Route::delete('attributes/values/{value}', [AttributeController::class, 'destroyValue'])
+            ->name('attributes.values.destroy');
     });
+
 
     Route::prefix('admin/product/cat')
         ->name('admin.product.cat.')
