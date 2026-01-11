@@ -115,7 +115,7 @@
                             <li><a href="{{ route('admin.product.cat.index') }}">Danh mục</a></li>
 
                             <li>
-                                <a href="{{ route('admin.product.attribute.index') }}">
+                                <a href="{{ route('admin.product.attributes.index') }}">
                                     Thuộc tính (Màu, Size...)
                                 </a>
                             </li>

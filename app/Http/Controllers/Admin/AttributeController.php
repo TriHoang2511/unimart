@@ -34,38 +34,33 @@ class AttributeController extends Controller
     }
 
     // 2. Thêm giá trị con (Đỏ, Xanh, 128GB...)
-    public function storeValue(Request $request)
+    public function storeValue(Request $request, $attributeId)
     {
         $request->validate([
-            'attribute_id' => 'required|exists:attributes,id',
             'value' => 'required|string|max:255',
-        ], [
-            'value.required' => 'Giá trị không được để trống.',
         ]);
 
-        // Logic chống trùng lặp giá trị trong cùng 1 thuộc tính
-        $exists = AttributeValue::where('attribute_id', $request->attribute_id)
-                                ->where('value', $request->value)
-                                ->exists();
-        
-        if ($exists) {
-            return back()->with('error', 'Giá trị này đã tồn tại trong thuộc tính.');
-        }
-
+        // Sử dụng $attributeId trực tiếp từ URL thay vì hidden input (nếu muốn)
         AttributeValue::create([
-            'attribute_id' => $request->attribute_id,
+            'attribute_id' => $attributeId,
             'value' => $request->value
         ]);
 
-        return back()->with('status', 'Đã thêm giá trị mới thành công!');
+        return back()->with('status', 'Thêm giá trị thành công!');
     }
 
     // 3. Xóa giá trị con
-    public function destroyValue($id)
-    {
-        $value = AttributeValue::findOrFail($id);
-        $value->delete();
+    // public function destroyValue($id)
+    // {
+    //     $value = AttributeValue::findOrFail($id);
+    //     $value->delete();
 
+    //     return back()->with('status', 'Đã xóa giá trị thuộc tính.');
+    // }
+
+    public function destroyValue(AttributeValue $value)
+    {
+        $value->delete();
         return back()->with('status', 'Đã xóa giá trị thuộc tính.');
     }
 }
