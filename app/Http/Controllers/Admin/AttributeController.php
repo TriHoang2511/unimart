@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class AttributeController extends Controller
 {
+    // =================================================== ATTRIBUTE PARENT ===================================================
     // Hiển thị danh sách
     public function index()
     {
@@ -33,6 +34,27 @@ class AttributeController extends Controller
         return back()->with('status', 'Đã thêm thuộc tính mới thành công!');
     }
 
+    public function edit(Attribute $attribute)
+    {
+        return view('admin.product.attribute.edit', compact('attribute'));
+    }
+
+    public function update(Request $request, Attribute $attribute)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:attributes,name,' . $attribute->id,
+        ], [
+            'name.required' => 'Tên thuộc tính không được để trống.',
+            'name.unique' => 'Thuộc tính này đã tồn tại.',
+        ]);
+
+        $attribute->update([
+            'name' => $validated['name'],
+        ]);
+
+        return redirect()->route('admin.product.attributes.index')->with('status', 'Đã cập nhật thuộc tính thành công!');
+    }
+    
     // 2. Thêm giá trị con (Đỏ, Xanh, 128GB...)
     public function storeValue(Request $request, $attributeId)
     {
@@ -63,4 +85,9 @@ class AttributeController extends Controller
         $value->delete();
         return back()->with('status', 'Đã xóa giá trị thuộc tính.');
     }
+
+
+    // =================================================== END ATTRIBUTE PARENT ====================================================
+
+    
 }

@@ -150,11 +150,14 @@ Route::middleware('auth')->group(function () {
             ->name('attributes.store');
 
         // (Optional – dùng sau này)
-        // Route::put('attributes/{attribute}', [AttributeController::class, 'update'])
-        //     ->name('attributes.update');
+        Route::get('attributes/{attribute}/edit', [AttributeController::class, 'edit'])
+            ->name('attributes.edit');
 
-        // Route::delete('attributes/{attribute}', [AttributeController::class, 'destroy'])
-        //     ->name('attributes.destroy');
+        Route::put('attributes/{attribute}', [AttributeController::class, 'update'])
+            ->name('attributes.update');
+
+        Route::delete('attributes/{attribute}', [AttributeController::class, 'destroy'])
+            ->name('attributes.destroy');
 
 
     /*

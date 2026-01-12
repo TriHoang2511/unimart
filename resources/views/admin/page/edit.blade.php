@@ -60,7 +60,7 @@
                         <h5 class="m-0 font-weight-bold text-primary">
                             <i class="fas fa-edit mr-2"></i>Chỉnh sửa trang: <span class="text-dark">{{ $page->title }}</span>
                         </h5> 
-                        <a href="{{ route('admin.page.list') }}" class="btn btn-sm btn-light border">
+                        <a href="{{ route('admin.page.index') }}" class="btn btn-sm btn-light border">
                             <i class="fas fa-arrow-left mr-1"></i> Quay lại danh sách
                         </a>
                     </div>
