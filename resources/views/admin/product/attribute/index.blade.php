@@ -48,10 +48,22 @@
                             </thead>
                             <tbody>
                                 @if ($attributes->count() > 0)
-                                    @foreach ($attributes as $index => $attr)
+                                    @foreach ($attributes as $attr)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td><strong class="text-primary">{{ $attr->name }}</strong></td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                <div class="font-weight-bold text-primary">
+                                                    {{ $attr->name }}
+                                                </div>
+
+                                                {{-- Chỗ trống cho tương lai --}}
+                                                <small class="text-muted d-block">
+                                                    0 sản phẩm đang sử dụng
+                                                </small>
+
+                                                <a href="{{ route('admin.product.attributes.edit', $attr->id) }}"
+                                                    class="btn btn-sm btn-outline-info mt-1">Sửa</a>
+                                            </td>
                                             <td>
                                                 @foreach ($attr->values as $val)
                                                     <span class="badge badge-secondary p-2 mb-1"
