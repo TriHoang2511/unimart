@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\PostController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -99,6 +100,36 @@ Route::middleware('auth')->group(function () {
         Route::post('/action', [PageController::class, 'action'])->name('admin.page.action');
     });
 
+
+     // Post Management Routes
+        Route::prefix('admin/post')
+        ->name('admin.post.')
+        ->group(function () {
+
+        Route::get('/', [PostController::class, 'index'])
+            ->name('index')
+            ->can('post.view');
+
+        Route::get('/create', [PostController::class, 'create'])
+            ->name('create')
+            ->can('post.create');
+
+        Route::post('/', [PostController::class, 'store'])
+            ->name('store')
+            ->can('post.create');
+
+        Route::get('/{post}/edit', [PostController::class, 'edit'])
+            ->name('edit')
+            ->can('post.edit');
+
+        Route::put('/{post}', [PostController::class, 'update'])
+            ->name('update')
+            ->can('post.edit');
+
+        Route::delete('/{post}', [PostController::class, 'destroy'])
+            ->name('destroy')
+            ->can('post.delete');
+    });
 
     // Product Management Routes
     Route::prefix('admin/product')
