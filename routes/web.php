@@ -135,7 +135,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin/product')->name('admin.product.')->group(function () {
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | ATTRIBUTES (Thuộc tính gốc: Màu sắc, Size, Chất liệu...)
     |--------------------------------------------------------------------------
@@ -160,17 +160,29 @@ Route::middleware('auth')->group(function () {
             ->name('attributes.destroy');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ATTRIBUTE VALUES (Giá trị thuộc tính: Đỏ, Xanh, L, XL...)
-    |--------------------------------------------------------------------------
-    */
+        /*
+|--------------------------------------------------------------------------
+| ATTRIBUTE VALUES (Giá trị thuộc tính: Đỏ, Xanh, L, XL...)
+|--------------------------------------------------------------------------
+*/
 
-        // Thêm giá trị cho 1 thuộc tính cụ thể
+        // LIST giá trị của 1 thuộc tính (dùng cho edit blade / ajax)
+        Route::get('attributes/{attribute}/values', [AttributeController::class, 'listValues'])
+            ->name('attributes.values.index');
+
+        // Thêm giá trị cho 1 thuộc tính
         Route::post('attributes/{attribute}/values', [AttributeController::class, 'storeValue'])
             ->name('attributes.values.store');
 
-        // Xóa 1 giá trị thuộc tính
+        // Cập nhật value (value, sku_code, is_active)
+        Route::put('attributes/values/{value}', [AttributeController::class, 'updateValue'])
+            ->name('attributes.values.update');
+
+        // Bật / tắt trạng thái sử dụng
+        Route::patch('attributes/values/{value}/toggle', [AttributeController::class, 'toggleValue'])
+            ->name('attributes.values.toggle');
+
+        // Xóa giá trị thuộc tính
         Route::delete('attributes/values/{value}', [AttributeController::class, 'destroyValue'])
             ->name('attributes.values.destroy');
     });
