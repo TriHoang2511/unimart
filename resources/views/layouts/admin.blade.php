@@ -10,8 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/solid.min.css">
     <link rel="stylesheet" href="{{ asset('admin/css/style.css') }}">
     <title>Admintrator</title>
+     {{-- STACK STYLES --}}
+    @stack('styles')
+    @vite(['resources/js/app.js'])
+
 </head>
-`
 
 <body>
     <div id="warpper" class="nav-fixed">
@@ -224,6 +227,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    {{-- STACK SCRIPTS --}}
+    @stack('scripts')
 </body>
 
 </html>

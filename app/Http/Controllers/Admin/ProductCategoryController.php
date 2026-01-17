@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
+use App\Models\Attribute;
 use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
@@ -69,10 +70,26 @@ class ProductCategoryController extends Controller
         return $ids;
     }
 
+    // public function edit(ProductCategory $category)
+    // {
+    //     $category->load('children');
+
+    //     $excludedIds = $this->getDescendantIds($category);
+    //     $excludedIds[] = $category->id;
+
+    //     $categories = ProductCategory::whereNotIn('id', $excludedIds)
+    //         ->orderBy('sort_order')
+    //         ->get();
+
+    //     return view('admin.product.cat.edit', compact('category', 'categories'));
+    // }
+
     public function edit(ProductCategory $category)
     {
+        // Load cây con (đang dùng cho parent select)
         $category->load('children');
 
+        // ====== PHẦN CŨ: XỬ LÝ DANH MỤC CHA ======
         $excludedIds = $this->getDescendantIds($category);
         $excludedIds[] = $category->id;
 
@@ -80,7 +97,19 @@ class ProductCategoryController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('admin.product.cat.edit', compact('category', 'categories'));
+        // ====== PHẦN MỚI: ATTRIBUTE ======
+        $attributes = Attribute::orderBy('name')->get();
+
+        $selectedAttributes = $category->attributes()
+            ->pluck('attributes.id')
+            ->toArray();
+
+        return view('admin.product.cat.edit', compact(
+            'category',
+            'categories',
+            'attributes',
+            'selectedAttributes'
+        ));
     }
 
     public function destroy(ProductCategory $category)
@@ -209,6 +238,9 @@ class ProductCategoryController extends Controller
             'status'      => 'required|in:0,1',
             'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'description' => 'nullable|string',
+            // Phần mới thêm để xử lý thuộc tính
+            'attribute_ids' => 'nullable|array', // Thêm dòng này để nhận mảng ID thuộc tính
+            'attribute_ids.*' => 'exists:attributes,id',
         ]);
 
         $data = [
@@ -226,8 +258,35 @@ class ProductCategoryController extends Controller
 
         $category->update($data);
 
+        // ==========================================
+        // CẬP NHẬT QUY TẮC THUỘC TÍNH (NEW)
+        // ==========================================
+        // Nếu có gửi mảng attribute_ids lên thì đồng bộ, nếu không thì xóa hết liên kết
+        $category->attributes()->sync($request->input('attribute_ids', []));
+
         return redirect()
             ->route('admin.product.cat.index')
             ->with('status', 'Cập nhật danh mục thành công!');
     }
+
+    // public function editAttributes($id)
+    // {
+    //     $category = ProductCategory::findOrFail($id);
+    //     $attributes = Attribute::all(); // Lấy tất cả thuộc tính từ bảng attributes
+
+    //     // Lấy danh sách ID các thuộc tính đã gán cho danh mục này
+    //     $selectedAttributes = $category->attributes()->pluck('attributes.id')->toArray();
+
+    //     return view('admin.product.cat.edit', compact('category', 'attributes', 'selectedAttributes'));
+    // }
+
+    // public function updateAttributes(Request $request, $id)
+    // {
+    //     $category = ProductCategory::findOrFail($id);
+
+    //     // Lưu vào bảng category_attributes
+    //     $category->attributes()->sync($request->attribute_ids);
+
+    //     return redirect()->route('admin.product.cat.index')->with('status', 'Cập nhật quy tắc thuộc tính thành công!');
+    // }
 }

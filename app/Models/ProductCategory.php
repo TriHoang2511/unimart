@@ -34,9 +34,11 @@ class ProductCategory extends Model
         return $this->children()->with('childrenRecursive');
     }
 
-    // Thêm vào trong class ProductCategory
+    // Kết nối với thuộc tính để biết danh mục này có những thuộc tính nào
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class, 'category_attributes', 'category_id', 'attribute_id');
     }
+
+   
 }

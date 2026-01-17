@@ -39,7 +39,7 @@
                             <div class="form-group mb-3">
                                 <label class="fw-bold">Slug</label>
                                 <input type="text" name="slug" class="form-control" value="{{ $category->slug }}"
-                                    {{ $category->slug === 'khac' ? 'disabled' : '' }}>
+                                    {{ $category->slug === 'khac' ? 'readonly' : '' }}>
                             </div>
 
                             {{-- DANH MỤC CHA --}}
@@ -49,10 +49,12 @@
                                     {{ $category->slug === 'khac' ? 'disabled' : '' }}>
                                     <option value="">— Danh mục gốc —</option>
                                     @foreach ($categories as $cat)
-                                        <option value="{{ $cat->id }}"
-                                            {{ $category->parent_id == $cat->id ? 'selected' : '' }}>
-                                            {{ str_repeat('— ', $cat->level ?? 0) . $cat->name }}
-                                        </option>
+                                        @if ($cat->id !== $category->id)
+                                            <option value="{{ $cat->id }}"
+                                                {{ $category->parent_id == $cat->id ? 'selected' : '' }}>
+                                                {{ str_repeat('— ', $cat->level ?? 0) . $cat->name }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -80,8 +82,10 @@
 
                             <div class="form-group mb-3">
                                 <label class="fw-bold">Mô tả</label>
-                                <textarea name="description" class="form-control" rows="3">{{ $category->description }} {{ $category->description === 'khac' ? 'disabled' : '' }}</textarea>
+                                <textarea name="description" class="form-control" rows="3"
+                                    {{ $category->description === 'khac' ? 'disabled' : '' }}>{{ $category->description }}</textarea>
                             </div>
+
                             {{-- TRẠNG THÁI --}}
                             <div class="form-group mb-4">
                                 <label class="fw-bold d-block">Trạng thái</label>
@@ -101,6 +105,66 @@
                                 </div>
                             </div>
 
+                            {{-- THUỘC TÍNH ÁP DỤNG --}}
+                            @if ($category->slug !== 'khac')
+                                <div class="card mt-4 border-0 shadow-sm">
+                                    <div class="card-header bg-white">
+                                        <h6 class="mb-0 fw-bold">Quy tắc thuộc tính cho danh mục</h6>
+                                        <small class="text-muted">
+                                            Các thuộc tính được chọn sẽ hiển thị khi tạo sản phẩm thuộc danh mục này
+                                        </small>
+                                    </div>
+
+                                    <div class="card-body">
+
+                                        @foreach ($attributes as $attr)
+                                            <div class="border rounded p-3 mb-3">
+
+                                                {{-- CHECKBOX + NAME --}}
+                                                <div class="form-check mb-2 align-items-center d-flex">
+                                                    <input class="form-check-input" type="checkbox" name="attribute_ids[]"
+                                                        value="{{ $attr->id }}" id="attr_{{ $attr->id }}"
+                                                        {{ in_array($attr->id, $selectedAttributes) ? 'checked' : '' }}>
+
+                                                    <label class="form-check-label fw-bold u-cursor-pointer"
+                                                        for="attr_{{ $attr->id }}">
+                                                        {{ $attr->name }}
+                                                    </label>
+                                                </div>
+
+                                                {{-- DESCRIPTION --}}
+                                                @if ($attr->description)
+                                                    <div class="text-muted small mb-2">
+                                                        {{ $attr->description }}
+                                                    </div>
+                                                @endif
+
+                                                {{-- METADATA --}}
+                                                <div class="small text-muted mb-2">
+                                                    Loại: <strong>{{ ucfirst($attr->type) }}</strong>
+                                                    @if ($attr->unit)
+                                                        • Đơn vị: <strong>{{ $attr->unit }}</strong>
+                                                    @endif
+                                                </div>
+
+                                                {{-- VALUES PREVIEW --}}
+                                                @if ($attr->values->count())
+                                                    <div class="d-flex flex-wrap attr-values">
+                                                        @foreach ($attr->values as $value)
+                                                            <span class="badge bg-light text-dark border px-2 py-1">
+                                                                {{ $value->value }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+                            @endif
+
                             {{-- ACTION --}}
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('admin.product.cat.index') }}" class="btn btn-outline-secondary">
@@ -111,13 +175,19 @@
                                     {{ $category->slug === 'khac' ? 'Cập nhật hiển thị' : 'Cập nhật danh mục' }}
                                 </button>
                             </div>
-
                         </form>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+    <style>
+        .u-cursor-pointer {
+            cursor: pointer;
+        }
+
+        .attr-values {
+            gap: 8px;
+        }
+    </style>
 @endsection

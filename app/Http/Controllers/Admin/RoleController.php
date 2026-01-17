@@ -19,7 +19,7 @@ class RoleController extends Controller
         return view('admin.role.index', compact('roles'));
     }
 
-    function create(Request $request)
+    function create()
     {
         $permissions = Permission::all()->groupBy(function ($permission) {
             return explode('.', $permission->name)[0];

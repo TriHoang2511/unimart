@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AttributeValue extends Model
 {
-    protected $fillable = ['attribute_id', 'value'];
+    protected $fillable = ['attribute_id', 'value', 'sku_code', 'is_active'];
 
     // Trỏ ngược về thuộc tính cha
     public function attribute()
