@@ -101,92 +101,38 @@ Route::middleware('auth')->group(function () {
 
 
     // Product Management Routes
-    Route::prefix('admin/product')
-        ->name('admin.product.')
-        ->group(function () {
-
-            Route::get('/', [ProductController::class, 'index'])
-                ->name('index')
-                ->can('product.view');
-
-            Route::get('/create', [ProductController::class, 'create'])
-                ->name('create')
-                ->can('product.create');
-
-            Route::post('/', [ProductController::class, 'store'])
-                ->name('store')
-                ->can('product.create');
-
-            Route::get('/{product}/edit', [ProductController::class, 'edit'])
-                ->name('edit')
-                ->can('product.edit');
-
-            Route::put('/{product}', [ProductController::class, 'update'])
-                ->name('update')
-                ->can('product.edit');
-
-            Route::delete('/{product}', [ProductController::class, 'destroy'])
-                ->name('destroy')
-                ->can('product.delete');
-
-            Route::post('/bulk-action', [ProductController::class, 'bulkAction'])
-                ->name('bulk-action');
-        });
-
     Route::prefix('admin/product')->name('admin.product.')->group(function () {
 
-        /*
-    |--------------------------------------------------------------------------
-    | ATTRIBUTES (Thuộc tính gốc: Màu sắc, Size, Chất liệu...)
-    |--------------------------------------------------------------------------
-    */
+        // 1. Các route AJAX/Cố định (Đặt lên đầu)
+        // Route::get('/get-attributes/{categoryId}', [ProductController::class, 'getAttributes'])->name('getAttributes');
+        Route::post('/upload-temp', [ProductController::class, 'uploadTemp'])->name('upload-temp'); // <--- MỚI
+        Route::delete('/delete-temp/{id}', [ProductController::class, 'deleteTemp'])->name('delete-temp');
+        Route::post('/bulk-action', [ProductController::class, 'bulkAction'])->name('bulk-action');
 
-        // Danh sách thuộc tính
-        Route::get('attributes', [AttributeController::class, 'index'])
-            ->name('attributes.index');
+        // 2. Quản lý Attributes (Thuộc tính)
+        Route::prefix('attributes')->name('attributes.')->group(function () {
+            Route::get('/', [AttributeController::class, 'index'])->name('index');
+            Route::post('/', [AttributeController::class, 'store'])->name('store');
+            Route::get('/{attribute}/edit', [AttributeController::class, 'edit'])->name('edit');
+            Route::put('/{attribute}', [AttributeController::class, 'update'])->name('update');
+            Route::delete('/{attribute}', [AttributeController::class, 'destroy'])->name('destroy');
 
-        // Tạo thuộc tính mới
-        Route::post('attributes', [AttributeController::class, 'store'])
-            ->name('attributes.store');
+            // Giá trị thuộc tính (Attribute Values)
+            Route::get('/{attribute}/values', [AttributeController::class, 'listValues'])->name('values.index');
+            Route::post('/{attribute}/values', [AttributeController::class, 'storeValue'])->name('values.store');
+            Route::put('/values/{value}', [AttributeController::class, 'updateValue'])->name('values.update');
+            Route::patch('/values/{value}/toggle', [AttributeController::class, 'toggleValue'])->name('values.toggle');
+            Route::delete('/values/{value}', [AttributeController::class, 'destroyValue'])->name('values.destroy');
+        });
 
-        // (Optional – dùng sau này)
-        Route::get('attributes/{attribute}/edit', [AttributeController::class, 'edit'])
-            ->name('attributes.edit');
-
-        Route::put('attributes/{attribute}', [AttributeController::class, 'update'])
-            ->name('attributes.update');
-
-        Route::delete('attributes/{attribute}', [AttributeController::class, 'destroy'])
-            ->name('attributes.destroy');
-
-
-        /*
-|--------------------------------------------------------------------------
-| ATTRIBUTE VALUES (Giá trị thuộc tính: Đỏ, Xanh, L, XL...)
-|--------------------------------------------------------------------------
-*/
-
-        // LIST giá trị của 1 thuộc tính (dùng cho edit blade / ajax)
-        Route::get('attributes/{attribute}/values', [AttributeController::class, 'listValues'])
-            ->name('attributes.values.index');
-
-        // Thêm giá trị cho 1 thuộc tính
-        Route::post('attributes/{attribute}/values', [AttributeController::class, 'storeValue'])
-            ->name('attributes.values.store');
-
-        // Cập nhật value (value, sku_code, is_active)
-        Route::put('attributes/values/{value}', [AttributeController::class, 'updateValue'])
-            ->name('attributes.values.update');
-
-        // Bật / tắt trạng thái sử dụng
-        Route::patch('attributes/values/{value}/toggle', [AttributeController::class, 'toggleValue'])
-            ->name('attributes.values.toggle');
-
-        // Xóa giá trị thuộc tính
-        Route::delete('attributes/values/{value}', [AttributeController::class, 'destroyValue'])
-            ->name('attributes.values.destroy');
+        // 3. Quản lý Sản phẩm chính (Dùng tham số động đặt ở cuối)
+        Route::get('/', [ProductController::class, 'index'])->name('index')->can('product.view');
+        Route::get('/create', [ProductController::class, 'create'])->name('create')->can('product.create');
+        Route::post('/', [ProductController::class, 'store'])->name('store')->can('product.create');
+        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit')->can('product.edit');
+        Route::put('/{product}', [ProductController::class, 'update'])->name('update')->can('product.edit');
+        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy')->can('product.delete');
     });
-
 
     Route::prefix('admin/product/cat')
         ->name('admin.product.cat.')
@@ -223,6 +169,11 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{category}/force-delete', [ProductCategoryController::class, 'force_delete'])
                 ->name('forceDelete')
                 ->can('product.cat.force_delete');
+
+            // ✅ AJAX: Lấy attribute theo category
+            Route::get('/{category}/attributes', [ProductCategoryController::class, 'attributes'])
+                ->name('attributes');
+            // ->can('product.create'); // hoặc product.view
         });
 });
 

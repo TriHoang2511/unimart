@@ -114,7 +114,7 @@ class AttributeController extends Controller
     {
         $request->validate([
             'value' => 'required|string|max:255',
-            'sku_code' => 'required|string|max:10',
+            'sku_code' => 'required|string',
             // 'is_active' => 'boolean',
         ]);
 

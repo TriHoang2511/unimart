@@ -174,7 +174,7 @@
                                     <input type="radio"
                                            name="status"
                                            value="1"
-                                           {{ old('status', 1) == 1 ? 'checked' : '' }}>
+                                           {{ old('status', '1') === '1' ? 'checked' : '' }}>
                                     Công khai
                                 </label>
                                 &nbsp;
@@ -182,7 +182,7 @@
                                     <input type="radio"
                                            name="status"
                                            value="0"
-                                           {{ old('status') == 0 ? 'checked' : '' }}>
+                                           {{ old('status', '1') === '0' ? 'checked' : '' }}>
                                     Ẩn
                                 </label>
                             </div>

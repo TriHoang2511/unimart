@@ -74,8 +74,8 @@
                             <div class="form-row align-items-end">
                                 <div class="col">
                                     <label class="small fw-bold">Giá trị</label>
-                                    <input type="text" name="value" value="{{ old('value') }}" class="form-control" placeholder="Đỏ, Xanh, XL..."
-                                        required>
+                                    <input type="text" name="value" value="{{ old('value') }}" class="form-control"
+                                        placeholder="Đỏ, Xanh, XL..." required>
                                     @error('value')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
@@ -83,10 +83,11 @@
 
                                 <div class="col-3">
                                     <label class="small fw-bold">SKU Code</label>
-                                    <input type="text" name="sku_code" value="{{ old('sku_code') }}" class="form-control sku-input" placeholder="RED"
-                                        maxlength="10" required>
+                                    <input type="text" name="sku_code" value="{{ old('sku_code') }}"
+                                        class="form-control sku-input" placeholder="VD: TITANIUM_DESERT" required>
+
                                     @error('sku_code')
-                                        <small class="text-danger">{{ $message }}</small>
+                                        <small class="text-danger d-block">{{ $message }}</small>
                                     @enderror
                                 </div>
 
@@ -96,9 +97,8 @@
                                     </button>
                                 </div>
                             </div>
-
                             <small class="text-muted">
-                                SKU: viết hoa, không dấu, hạn chế sửa sau khi đã dùng
+                                SKU: Chỉ dùng A–Z, 0–9 và dấu gạch dưới (_) "hạn chế sửa sau khi đã dùng"
                             </small>
                         </form>
 
@@ -134,7 +134,7 @@
                                         <td>
                                             <input type="text" name="sku_code" form="form-update-{{ $val->id }}"
                                                 class="form-control form-control-sm sku-input" value="{{ $val->sku_code }}"
-                                                maxlength="10" required>
+                                                required>
                                         </td>
 
                                         {{-- Cột 3: Trạng thái --}}
@@ -198,7 +198,7 @@
                 .toUpperCase()
                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                 .replace(/Đ/g, 'D')
-                .replace(/[^A-Z0-9]/g, '');
+                .replace(/[^A-Z0-9_-]/g, ''); // ✅ cho phép _ và -
 
             e.target.value = v;
         });
