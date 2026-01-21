@@ -269,6 +269,31 @@ class ProductCategoryController extends Controller
             ->with('status', 'Cập nhật danh mục thành công!');
     }
 
+    /**
+     * Trả về danh sách attributes + values của category (Ajax)
+     */
+    // public function attributes(ProductCategory $category)
+    // {
+    //     $attributes = $category->attributes()
+    //         ->with('values')
+    //         ->where('is_active', 1)
+    //         ->get();
+
+    //     return response()->json($attributes);
+    // }
+
+    public function attributes(ProductCategory $category)
+    {
+        // Laravel đã tự tìm thấy $category cho bạn rồi, không cần find() nữa.
+        $attributes = $category->attributes()
+            ->with(['values' => function ($q) {
+                $q->where('is_active', 1);
+            }])
+            ->get();
+
+        return response()->json($attributes);
+    }
+
     // public function editAttributes($id)
     // {
     //     $category = ProductCategory::findOrFail($id);

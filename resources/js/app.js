@@ -1,11 +1,14 @@
-import './bootstrap';
-import Alpine from 'alpinejs';
+$(document).ready(function() {
+    $('.nav-link.active .sub-menu').slideDown();
+    // $("p").slideUp();
 
-import { Editor } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
+    $('#sidebar-menu .arrow').click(function() {
+        $(this).parents('li').children('.sub-menu').slideToggle();
+        $(this).toggleClass('fa-angle-right fa-angle-down');
+    });
 
-window.Alpine = Alpine;
-window.TiptapEditor = Editor;
-window.TiptapStarterKit = StarterKit;
-
-Alpine.start();
+    $("input[name='checkall']").click(function() {
+        var checked = $(this).is(':checked');
+        $('.table-checkall tbody tr td input:checkbox').prop('checked', checked);
+    });
+});

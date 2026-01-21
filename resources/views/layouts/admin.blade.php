@@ -12,7 +12,6 @@
     <title>Admintrator</title>
      {{-- STACK STYLES --}}
     @stack('styles')
-    @vite(['resources/js/app.js'])
 
 </head>
 
