@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductVariant extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'product_variants';
 
@@ -15,9 +17,11 @@ class ProductVariant extends Model
         'product_id',
         'sku',
         'price',
-        'compare_at_price',
-        'stock_qty',      // Khớp với DB của bạn thay vì stock
-        'variant_image',
+        'compare_at_price', 
+        'status',
+        'availability',
+        'stock_qty',
+        'variant_image'
     ];
 
     protected $casts = [

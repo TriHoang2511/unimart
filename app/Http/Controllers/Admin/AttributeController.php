@@ -77,7 +77,7 @@ class AttributeController extends Controller
     {
         $request->validate([
             'value' => 'required|string|max:255',
-            'sku_code' => 'required|string|max:10',
+            'sku_code' => 'required|string',
         ], [
             'value.required' => 'Giá trị không được để trống.',
             'sku_code.required' => 'SKU không được để trống.',

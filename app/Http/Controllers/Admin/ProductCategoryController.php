@@ -269,19 +269,6 @@ class ProductCategoryController extends Controller
             ->with('status', 'Cập nhật danh mục thành công!');
     }
 
-    /**
-     * Trả về danh sách attributes + values của category (Ajax)
-     */
-    // public function attributes(ProductCategory $category)
-    // {
-    //     $attributes = $category->attributes()
-    //         ->with('values')
-    //         ->where('is_active', 1)
-    //         ->get();
-
-    //     return response()->json($attributes);
-    // }
-
     public function attributes(ProductCategory $category)
     {
         // Laravel đã tự tìm thấy $category cho bạn rồi, không cần find() nữa.
@@ -294,24 +281,4 @@ class ProductCategoryController extends Controller
         return response()->json($attributes);
     }
 
-    // public function editAttributes($id)
-    // {
-    //     $category = ProductCategory::findOrFail($id);
-    //     $attributes = Attribute::all(); // Lấy tất cả thuộc tính từ bảng attributes
-
-    //     // Lấy danh sách ID các thuộc tính đã gán cho danh mục này
-    //     $selectedAttributes = $category->attributes()->pluck('attributes.id')->toArray();
-
-    //     return view('admin.product.cat.edit', compact('category', 'attributes', 'selectedAttributes'));
-    // }
-
-    // public function updateAttributes(Request $request, $id)
-    // {
-    //     $category = ProductCategory::findOrFail($id);
-
-    //     // Lưu vào bảng category_attributes
-    //     $category->attributes()->sync($request->attribute_ids);
-
-    //     return redirect()->route('admin.product.cat.index')->with('status', 'Cập nhật quy tắc thuộc tính thành công!');
-    // }
 }

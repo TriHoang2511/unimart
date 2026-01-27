@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
     protected $table = 'products';
 
     /**
@@ -34,6 +35,25 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
+
+    protected static function booted()
+    {
+        // Khi Product bị xóa mềm (delete)
+        static::deleted(function ($product) {
+            // Nếu là xóa vĩnh viễn (forceDelete)
+            if ($product->isForceDeleting()) {
+                $product->variants()->forceDelete();
+            } else {
+                // Xóa mềm các con
+                $product->variants()->delete();
+            }
+        });
+
+        // Khi Product được khôi phục (restore)
+        static::restored(function ($product) {
+            $product->variants()->restore();
+        });
     }
 
     /**

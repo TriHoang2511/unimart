@@ -4,6 +4,51 @@
 
 @section('content')
     <style>
+        /* 1. Thu gọn và cố định các ô input/select trong bảng biến thể */
+        .variant-table input.form-control-sm,
+        .variant-table select.form-select-sm {
+            padding: 4px 6px;
+            font-size: 13px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            display: inline-block;
+        }
+
+        /* 2. Cố định chiều rộng cụ thể để tiêu đề và nội dung luôn thẳng hàng */
+        .variant-table input[type="number"].variant-price,
+        .variant-table input[type="number"].variant-compare-price {
+            width: 95px;
+            /* Độ rộng cho ô Giá bán và Giá gốc */
+        }
+
+        .variant-table input[type="number"].variant-stock {
+            width: 70px;
+            /* Độ rộng cho ô Kho hàng */
+        }
+
+        .variant-table input[name="v_sku[]"] {
+            width: 120px;
+            /* Độ rộng cho ô SKU */
+        }
+
+        .variant-table select {
+            width: 110px;
+            /* Độ rộng cho Cung ứng và Trạng thái */
+        }
+
+        /* 3. Khống chế phần chữ của tên biến thể không làm vỡ hàng */
+        .variant-name-text {
+            max-width: 160px;
+            display: block;
+            word-wrap: break-word;
+            line-height: 1.2;
+        }
+
+        /* 4. Căn giữa các icon trong bảng */
+        .variant-table .variant-img-slot {
+            margin: 0 auto;
+        }
+
         .variant-header {
             display: flex;
             justify-content: space-between;
@@ -23,9 +68,9 @@
             width: 120px;
         }
 
-        /* =========================
-               VARIANT TABLE
-            ========================== */
+        /* ============================================================
+                            VARIANT TABLE STYLE
+        ============================================================ */
         .variant-table thead {
             background: #f8fafc;
         }
@@ -34,18 +79,44 @@
             text-transform: uppercase;
             font-size: 11px;
             letter-spacing: 0.5px;
-            color: #64748b;
-            padding: 12px;
+            font-weight: 600;
+            color: #555;
+            vertical-align: middle;
+            border-top: none;
+            padding: 10px 5px !important;
+            /* Dùng bản rút gọn để kiểm soát chính xác độ hẹp */
         }
 
         .variant-table td {
-            padding: 12px;
+            padding: 8px 5px !important;
             vertical-align: middle;
         }
 
+        .variant-table .form-control,
+        .variant-table .form-select {
+            padding: 0.4rem 0.5rem;
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
+
+        /* Slot ảnh biến thể */
+        .variant-img-slot {
+            width: 45px;
+            height: 45px;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            background: #f9f9f9;
+            margin: 0 auto;
+            /* Căn giữa trong ô */
+        }
+
         /* =========================
-               VARIANT IMAGE SLOT
-            ========================== */
+            VARIANT IMAGE SLOT
+         ========================== */
         .variant-img-slot {
             width: 45px;
             height: 45px;
@@ -66,8 +137,8 @@
         }
 
         /* =========================
-               MEDIA MANAGER
-            ========================== */
+            MEDIA MANAGER
+        ========================== */
         .image-card {
             border: 2px solid transparent;
             transition: 0.2s;
@@ -111,8 +182,8 @@
         }
 
         /* =========================
-               ATTRIBUTE (CHIPS)
-            ========================== */
+            ATTRIBUTE (CHIPS)
+        ========================== */
         :root {
             --primary-color: #4361ee;
         }
@@ -272,6 +343,8 @@
                                     <div class="variant-bulk">
                                         <input type="number" id="bulk-price" class="form-control form-control-sm"
                                             placeholder="Giá bán">
+                                        <input type="number" id="bulk-compare-at-price"
+                                            class="form-control form-control-sm" placeholder="Giá gốc">
                                         <input type="number" id="bulk-stock" class="form-control form-control-sm"
                                             placeholder="Kho">
                                         <button type="button" class="btn btn-sm btn-outline-primary"
@@ -279,16 +352,18 @@
                                     </div>
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-sm align-middle variant-table">
+                                    <table class="table table-sm align-middle variant-table" style="min-width: 1000px;">
                                         <thead>
-                                            <tr>
-                                                <th width="70">Ảnh</th>
-                                                <th>Biến thể</th>
-                                                <th>SKU</th>
-                                                <th>Giá bán</th>
-                                                <th>Giá gốc</th>
-                                                <th width="100">Kho</th>
-                                                <th width="40"></th>
+                                            <tr class="bg-light text-uppercase" style="font-size: 0.75rem;">
+                                                <th width="70" class="text-center">Ảnh</th>
+                                                <th width="180">Biến thể</th>
+                                                <th width="160">SKU</th>
+                                                <th width="140">Giá bán</th>
+                                                <th width="140">Giá gốc</th>
+                                                <th width="90" class="text-center">Kho</th>
+                                                <th width="150">Cung ứng</th>
+                                                <th width="130">Trạng thái</th>
+                                                <th width="50"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="variants-table-body"></tbody>
@@ -538,21 +613,44 @@
                 combos.forEach((c, i) => {
                     const name = c.map(x => x.name).join(' / ');
                     const sku = (baseSku ? baseSku + '-' : '') + c.map(x => x.sku).join('-');
+                    // Cập nhật mẫu hàng trong hàm render của bạn
                     tbody.insertAdjacentHTML('beforeend', `
-                        <tr>
-                            <td>
-                                <div class="variant-img-slot rounded border shadow-sm" id="v-img-display-${i}" onclick="openImagePicker(${i})">
-                                    <i class="fa fa-plus text-muted small"></i>
-                                </div>
-                                <input type="hidden" name="v_image[]" id="v-input-${i}">
-                            </td>
-                            <td><small class="fw-bold">${name}</small><input type="hidden" name="v_values[]" value="${c.map(x=>x.id).join(',')}"></td>
-                            <td><input type="text" name="v_sku[]" class="form-control form-control-sm" value="${sku}"></td>
-                            <td><input type="number" name="v_price[]" class="form-control form-control-sm variant-price" placeholder="Bán"></td>
-                            <td><input type="number" name="v_compare_at_price[]" class="form-control form-control-sm variant-compare-price" placeholder="Gốc"></td>
-                            <td><input type="number" name="v_stock[]" class="form-control form-control-sm variant-stock" value="0"></td>
-                            <td><button type="button" class="btn btn-sm text-danger" onclick="this.closest('tr').remove()"><i class="fa fa-trash"></i></button></td>
-                        </tr>`);
+                    <tr class="text-center">
+                        <td>
+                            <div class="variant-img-slot mx-auto" onclick="openImagePicker(${i})">
+                                <i class="fa fa-plus text-muted" style="font-size: 10px;"></i>
+                            </div>
+                            <input type="hidden" name="v_image[]" id="v-input-${i}">
+                        </td>
+                        <td class="text-start">
+                            <div class="fw-bold text-dark" style="font-size: 0.8rem;">${name}</div>
+                            <input type="hidden" name="v_values[]" value="${c.map(x=>x.id).join(',')}">
+                        </td>
+                        <td><input type="text" name="v_sku[]" class="form-control" value="${sku}"></td>
+                        <td><input type="number" name="v_price[]" class="form-control text-end" placeholder="0"></td>
+                        <td><input type="number" name="v_compare_at_price[]" class="form-control text-end" placeholder="0"></td>
+                        <td><input type="number" name="v_stock[]" class="form-control text-center" value="0"></td>
+                        <td>
+                            <select name="v_availability[]" class="form-select">
+                                <option value="ready">Sẵn có</option>
+                                <option value="coming_soon">Sắp về</option>
+                                <option value="contact">Liên hệ</option>
+                                <option value="preorder">Đặt trước</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="v_status[]" class="form-select">
+                                <option value="1">Mở bán</option>
+                                <option value="0">Khóa</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-danger border-0" onclick="this.closest('tr').remove()">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
                 });
                 document.getElementById('variants-preview').classList.remove('d-none');
             }
@@ -578,15 +676,15 @@
                                 </div>
                                 <div class="chips-container">
                                     ${attr.values.map(v => `
-                                                                <div class="chip-item">
-                                                                    <input class="attribute-checkbox" type="checkbox" value="${v.id}" 
-                                                                        data-name="${v.value}" data-sku="${v.sku_code}" 
-                                                                        data-attr-id="${attr.id}" id="v${v.id}">
-                                                                    <label class="attribute-label" for="v${v.id}">
-                                                                        ${v.value}
-                                                                    </label>
-                                                                </div>
-                                                            `).join('')}
+                                                                                <div class="chip-item">
+                                                                                    <input class="attribute-checkbox" type="checkbox" value="${v.id}" 
+                                                                                        data-name="${v.value}" data-sku="${v.sku_code}" 
+                                                                                        data-attr-id="${attr.id}" id="v${v.id}">
+                                                                                    <label class="attribute-label" for="v${v.id}">
+                                                                                        ${v.value}
+                                                                                    </label>
+                                                                                </div>
+                                                                            `).join('')}
                                 </div>
                             </div>
                             `).join('');
@@ -596,8 +694,10 @@
 
             function applyBulk() {
                 const p = document.getElementById('bulk-price').value;
+                const cp = document.getElementById('bulk-compare-at-price').value;
                 const s = document.getElementById('bulk-stock').value;
                 if (p) document.querySelectorAll('.variant-price').forEach(i => i.value = p);
+                if (cp) document.querySelectorAll('.variant-compare-price').forEach(i => i.value = cp);
                 if (s) document.querySelectorAll('.variant-stock').forEach(i => i.value = s);
             }
         </script>
