@@ -126,12 +126,15 @@ Route::middleware('auth')->group(function () {
         });
 
         // 3. Quản lý Sản phẩm chính (Dùng tham số động đặt ở cuối)
+        Route::post('/quick-update', [ProductController::class, 'quickUpdate'])->name('quick_update');
         Route::get('/', [ProductController::class, 'index'])->name('index')->can('product.view');
         Route::get('/create', [ProductController::class, 'create'])->name('create')->can('product.create');
         Route::post('/', [ProductController::class, 'store'])->name('store')->can('product.create');
         Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit')->can('product.edit');
         Route::put('/{product}', [ProductController::class, 'update'])->name('update')->can('product.edit');
         Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy')->can('product.delete');
+        Route::patch('/{id}/restore', [ProductController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('force-delete');
     });
 
     Route::prefix('admin/product/cat')
