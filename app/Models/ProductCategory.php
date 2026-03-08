@@ -40,5 +40,35 @@ class ProductCategory extends Model
         return $this->belongsToMany(Attribute::class, 'category_attributes', 'category_id', 'attribute_id');
     }
 
-   
+    /**
+     * Một danh mục có nhiều sản phẩm
+     */
+    public function products()
+    {
+        // product_category_id là tên cột khóa ngoại ở bảng products
+        return $this->hasMany(Product::class, 'product_category_id');
+    }
+
+    //  KẾT THỨC PRODUCT CATEGORY CHO ADMIN ==============================
+    public function childrenForMenu()
+    {
+        return $this->hasMany(ProductCategory::class, 'parent_id')
+            ->where('status', 1)
+            ->orderBy('sort_order')
+            ->with('childrenForMenu');
+    }
+
+    /**
+     * Lấy toàn bộ ID danh mục con (n cấp)
+     */
+    public function getAllChildrenIds()
+    {
+        $ids = collect([$this->id]);
+
+        foreach ($this->children as $child) {
+            $ids = $ids->merge($child->getAllChildrenIds());
+        }
+
+        return $ids;
+    }
 }

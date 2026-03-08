@@ -6,9 +6,15 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PageController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\OrderController;
+
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
+use App\Http\Controllers\Client\CartController;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -105,9 +111,9 @@ Route::middleware('auth')->group(function () {
 
         // 1. Các route AJAX/Cố định (Đặt lên đầu)
         // Route::get('/get-attributes/{categoryId}', [ProductController::class, 'getAttributes'])->name('getAttributes');
-        Route::post('/upload-temp', [ProductController::class, 'uploadTemp'])->name('upload-temp'); // <--- MỚI
-        Route::delete('/delete-temp/{id}', [ProductController::class, 'deleteTemp'])->name('delete-temp');
-        Route::post('/bulk-action', [ProductController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/upload-temp', [AdminProductController::class, 'uploadTemp'])->name('upload-temp'); // <--- MỚI
+        Route::delete('/delete-temp/{id}', [AdminProductController::class, 'deleteTemp'])->name('delete-temp');
+        Route::post('/bulk-action', [AdminProductController::class, 'bulkAction'])->name('bulk-action');
 
         // 2. Quản lý Attributes (Thuộc tính)
         Route::prefix('attributes')->name('attributes.')->group(function () {
@@ -126,15 +132,15 @@ Route::middleware('auth')->group(function () {
         });
 
         // 3. Quản lý Sản phẩm chính (Dùng tham số động đặt ở cuối)
-        Route::post('/quick-update', [ProductController::class, 'quickUpdate'])->name('quick_update');
-        Route::get('/', [ProductController::class, 'index'])->name('index')->can('product.view');
-        Route::get('/create', [ProductController::class, 'create'])->name('create')->can('product.create');
-        Route::post('/', [ProductController::class, 'store'])->name('store')->can('product.create');
-        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit')->can('product.edit');
-        Route::put('/{product}', [ProductController::class, 'update'])->name('update')->can('product.edit');
-        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy')->can('product.delete');
-        Route::patch('/{id}/restore', [ProductController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('force-delete');
+        Route::post('/quick-update', [AdminProductController::class, 'quickUpdate'])->name('quick_update');
+        Route::get('/', [AdminProductController::class, 'index'])->name('index')->can('product.view');
+        Route::get('/create', [AdminProductController::class, 'create'])->name('create')->can('product.create');
+        Route::post('/', [AdminProductController::class, 'store'])->name('store')->can('product.create');
+        Route::get('/{product}/edit', [AdminProductController::class, 'edit'])->name('edit')->can('product.edit');
+        Route::put('/{product}', [AdminProductController::class, 'update'])->name('update')->can('product.edit');
+        Route::delete('/{product}', [AdminProductController::class, 'destroy'])->name('destroy')->can('product.delete');
+        Route::patch('/{id}/restore', [AdminProductController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force-delete', [AdminProductController::class, 'forceDelete'])->name('force-delete');
     });
 
     Route::prefix('admin/product/cat')
@@ -173,11 +179,33 @@ Route::middleware('auth')->group(function () {
                 ->name('forceDelete')
                 ->can('product.cat.force_delete');
 
-            // ✅ AJAX: Lấy attribute theo category
+            // AJAX: Lấy attribute theo category
             Route::get('/{category}/attributes', [ProductCategoryController::class, 'attributes'])
                 ->name('attributes');
             // ->can('product.create'); // hoặc product.view
         });
+
+    Route::prefix('admin/order')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('admin.order.index');
+        Route::get('/create', [OrderController::class, 'create'])->name('admin.order.create');
+        Route::post('/', [OrderController::class, 'store'])->name('admin.order.store');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('admin.order.show');
+    });
+});
+
+// Client routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Trang chi tiết sản phẩm dùng ClientProductController
+Route::get('/san-pham/{slug}.html', [ClientProductController::class, 'show'])->name('product.detail');
+
+Route::prefix('gio-hang')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/buy-now', [CartController::class, 'buyNow'])->name('cart.buyNow');
+    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/delete/{id}', [CartController::class, 'delete'])->name('cart.delete');
+    Route::post('/update-status', [CartController::class, 'updateStatus'])->name('cart.updateStatus');
 });
 
 Route::middleware('auth')->group(function () {

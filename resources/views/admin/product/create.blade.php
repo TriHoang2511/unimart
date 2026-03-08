@@ -69,8 +69,8 @@
         }
 
         /* ============================================================
-                            VARIANT TABLE STYLE
-        ============================================================ */
+                                                                                        VARIANT TABLE STYLE
+                                                                    ============================================================ */
         .variant-table thead {
             background: #f8fafc;
         }
@@ -115,8 +115,8 @@
         }
 
         /* =========================
-            VARIANT IMAGE SLOT
-         ========================== */
+                                                                        VARIANT IMAGE SLOT
+                                                                     ========================== */
         .variant-img-slot {
             width: 45px;
             height: 45px;
@@ -137,8 +137,8 @@
         }
 
         /* =========================
-            MEDIA MANAGER
-        ========================== */
+                                                                        MEDIA MANAGER
+                                                                    ========================== */
         .image-card {
             border: 2px solid transparent;
             transition: 0.2s;
@@ -182,8 +182,8 @@
         }
 
         /* =========================
-            ATTRIBUTE (CHIPS)
-        ========================== */
+                                                                        ATTRIBUTE (CHIPS)
+                                                    ========================== */
         :root {
             --primary-color: #4361ee;
         }
@@ -237,6 +237,13 @@
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
+
+        .variant-table input[name="v_full_name[]"] {
+            width: 100%;
+            min-width: 200px;
+            border: 1px solid #e2e8f0;
+            background-color: #fff;
+        }
     </style>
 
     <div class="container-fluid py-3">
@@ -248,13 +255,9 @@
             <a href="{{ route('admin.product.index') }}" class="btn btn-outline-secondary"><i class="fa fa-arrow-left"></i>
                 Quay lại</a>
         </div>
-        @if ($errors->any())
+        @if (session('error'))
             <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ session('error') }}
             </div>
         @endif
 
@@ -275,9 +278,17 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="product_slug" class="form-control bg-light"
-                                        readonly value="{{ old('slug') }}">
+                                    <label class="form-label">Slug (Đường dẫn)</label>
+                                    <div class="input-group">
+                                        <input type="text" id="product_slug" name="slug" class="form-control"
+                                            value="{{ old('slug') }}" placeholder="Tự động tạo theo tên...">
+                                        <button class="btn btn-outline-primary" type="button" id="btn-lock-slug"
+                                            title="Mở/Khóa tự động">
+                                            <i class="fa fa-link"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Mặc định sẽ tự động tạo. Nhấn vào biểu tượng mắt xích để tự
+                                        sửa tay.</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Mã SKU gốc</label>
@@ -288,7 +299,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Tóm tắt ngắn (SEO & Quickview)</label>
-                                <textarea name="summary" class="form-control" rows="3" placeholder="Nhập mô tả ngắn tối đa 255 ký tự...">{{ old('summary') }}</textarea>
+                                <textarea name="technical_specifications" class="form-control" rows="3"
+                                    placeholder="Nhập mô tả ngắn tối đa 255 ký tự...">{{ old('technical_specifications') }}</textarea>
                             </div>
 
                             <div class="mb-0">
@@ -356,13 +368,16 @@
                                         <thead>
                                             <tr class="bg-light text-uppercase" style="font-size: 0.75rem;">
                                                 <th width="70" class="text-center">Ảnh</th>
+                                                <th>Sản phẩm đại diện</th>
                                                 <th width="180">Biến thể</th>
+                                                <th width="300">Tên biến thể hiển thị</th>
                                                 <th width="160">SKU</th>
                                                 <th width="140">Giá bán</th>
                                                 <th width="140">Giá gốc</th>
                                                 <th width="90" class="text-center">Kho</th>
                                                 <th width="150">Cung ứng</th>
                                                 <th width="130">Trạng thái</th>
+                                                <th width="50" class="text-center">Mô tả</th>
                                                 <th width="50"></th>
                                             </tr>
                                         </thead>
@@ -416,6 +431,44 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade" id="variantDescriptionModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light">
+                                <h5 class="modal-title fw-bold">Mô tả cho biến thể: <span id="variant-name-display"
+                                        class="text-primary"></span></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Tóm tắt ngắn (Biến thể)</label>
+                                    <textarea id="modal-v-technical-specifications" class="form-control" rows="3"
+                                        placeholder="Thông số nhanh cho riêng biến thể này..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Mô tả chi tiết (Biến thể)</label>
+                                    <textarea id="variant_description_editor" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <div>
+                                    <button type="button" class="btn btn-warning fw-bold"
+                                        onclick="applyToAllVariants()">
+                                        <i class="fa fa-copy me-1"></i> Áp dụng cho tất cả biến thể
+                                    </button>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Đóng</button>
+                                    <button type="button" class="btn btn-primary px-4"
+                                        onclick="saveVariantContent()">Lưu thay đổi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -444,6 +497,58 @@
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const nameInput = document.getElementById('product_name');
+                const slugInput = document.getElementById('product_slug');
+                const btnLock = document.getElementById('btn-lock-slug');
+
+                // Biến trạng thái: true là đang "xích" (tự động), false là "mở" (tự sửa)
+                let isAutoSlug = true;
+
+                // Hàm tạo Slug chuẩn
+                function generateSlug(text) {
+                    return text.toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[đĐ]/g, 'd')
+                        .replace(/([^0-9a-z-\s])/g, '')
+                        .replace(/(\s+)/g, '-')
+                        .replace(/-+/g, '-')
+                        .trim().replace(/^-+|-+$/g, '');
+                }
+
+                // 1. Sự kiện khi gõ Tên sản phẩm
+                nameInput.addEventListener('input', function() {
+                    if (isAutoSlug) {
+                        slugInput.value = generateSlug(this.value);
+                    }
+                });
+
+                // 2. Sự kiện khi nhấn nút Mở/Khóa
+                btnLock.addEventListener('click', function() {
+                    isAutoSlug = !isAutoSlug; // Đảo trạng thái
+
+                    if (isAutoSlug) {
+                        // Chế độ Tự động
+                        this.innerHTML = '<i class="fa fa-link"></i>';
+                        this.classList.replace('btn-secondary', 'btn-outline-primary');
+                        slugInput.value = generateSlug(nameInput.value); // Cập nhật lại ngay theo tên
+                        slugInput.setAttribute('readonly', true); // Nên khóa lại để tránh gõ nhầm
+                    } else {
+                        // Chế độ Tự sửa (Manual)
+                        this.innerHTML = '<i class="fa fa-unlink text-danger"></i>';
+                        this.classList.replace('btn-outline-primary', 'btn-secondary');
+                        slugInput.removeAttribute('readonly');
+                        slugInput.focus();
+                    }
+                });
+
+                // 3. Nếu tự gõ vào Slug thì cũng ép định dạng slug luôn
+                slugInput.addEventListener('input', function() {
+                    if (!isAutoSlug) {
+                        this.value = generateSlug(this.value);
+                    }
+                });
+            });
             let currentVariantTarget = null;
             let uploadedImages = []; // Danh sách object ảnh {id, url, path, name}
 
@@ -461,12 +566,12 @@
             });
 
             // 2. Tạo Slug tự động
-            document.getElementById('product_name').addEventListener('input', function() {
-                let slug = this.value.toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-                document.getElementById('product_slug').value = slug;
-            });
+            // document.getElementById('product_name').addEventListener('input', function() {
+            //     let slug = this.value.toLowerCase()
+            //         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            //         .replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+            //     document.getElementById('product_slug').value = slug;
+            // });
 
             // 3. Upload ảnh qua AJAX
             document.getElementById('ajax-upload').addEventListener('change', function() {
@@ -584,9 +689,15 @@
             }
 
             function generateVariants() {
+                const productName = document.getElementById('product_name').value.trim(); // Lấy tên sản phẩm gốc
                 const baseSku = document.getElementById('base_sku').value.trim().toUpperCase();
                 const tbody = document.getElementById('variants-table-body');
                 const selected = {};
+
+                if (!productName) {
+                    alert('Vui lòng nhập tên sản phẩm gốc trước!');
+                    return;
+                }
 
                 document.querySelectorAll('.attribute-checkbox:checked').forEach(cb => {
                     const aid = cb.dataset.attrId;
@@ -610,50 +721,96 @@
 
                 const combos = combine(0, []);
                 tbody.innerHTML = '';
+
                 combos.forEach((c, i) => {
-                    const name = c.map(x => x.name).join(' / ');
+                    // LOGIC GHÉP TÊN: Tên gốc + các thuộc tính
+                    const variantSuffix = c.map(x => x.name).join(' ');
+                    const suggestedFullName = `${productName} ${variantSuffix}`;
+
                     const sku = (baseSku ? baseSku + '-' : '') + c.map(x => x.sku).join('-');
-                    // Cập nhật mẫu hàng trong hàm render của bạn
                     tbody.insertAdjacentHTML('beforeend', `
-                    <tr class="text-center">
-                        <td>
-                            <div class="variant-img-slot mx-auto" onclick="openImagePicker(${i})">
-                                <i class="fa fa-plus text-muted" style="font-size: 10px;"></i>
-                            </div>
-                            <input type="hidden" name="v_image[]" id="v-input-${i}">
-                        </td>
-                        <td class="text-start">
-                            <div class="fw-bold text-dark" style="font-size: 0.8rem;">${name}</div>
-                            <input type="hidden" name="v_values[]" value="${c.map(x=>x.id).join(',')}">
-                        </td>
-                        <td><input type="text" name="v_sku[]" class="form-control" value="${sku}"></td>
-                        <td><input type="number" name="v_price[]" class="form-control text-end" placeholder="0"></td>
-                        <td><input type="number" name="v_compare_at_price[]" class="form-control text-end" placeholder="0"></td>
-                        <td><input type="number" name="v_stock[]" class="form-control text-center" value="0"></td>
-                        <td>
-                            <select name="v_availability[]" class="form-select">
-                                <option value="ready">Sẵn có</option>
-                                <option value="coming_soon">Sắp về</option>
-                                <option value="contact">Liên hệ</option>
-                                <option value="preorder">Đặt trước</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="v_status[]" class="form-select">
-                                <option value="1">Mở bán</option>
-                                <option value="0">Khóa</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-outline-danger border-0" onclick="this.closest('tr').remove()">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
+                        <tr class="text-center">
+                            <td>
+                                <div class="variant-img-slot mx-auto" id="v-img-display-${i}" onclick="openImagePicker(${i})">
+                                    <i class="fa fa-plus text-muted" style="font-size: 10px;"></i>
+                                </div>
+                                <input type="hidden" name="v_image[]" id="v-input-${i}">
+                            </td>
+
+                            <td>
+                                <div class="form-check d-flex justify-content-center">
+                                    <input class="form-check-input" type="radio" name="is_default_index" value="${i}" ${i === 0 ? 'checked' : ''}>
+                                </div>
+                            </td>
+
+                            <td class="text-start">
+                                <span class="badge bg-light text-dark border">${variantSuffix}</span>
+                                <input type="hidden" name="v_values[]" value="${c.map(x=>x.id).join(',')}">
+                            </td>
+
+                            <td>
+                                <input type="text" name="v_full_name[]" class="form-control form-control-sm fw-bold" 
+                                    value="${suggestedFullName}" placeholder="Nhập tên biến thể">
+                            </td>
+
+                            <td><input type="text" name="v_sku[]" class="form-control form-control-sm" value="${sku}"></td>
+
+                            <td><input type="number" name="v_price[]" class="form-control form-control-sm text-end variant-price" placeholder="0"></td>
+
+                            <td><input type="number" name="v_compare_at_price[]" class="form-control form-control-sm text-end variant-compare-price" placeholder="0"></td>
+
+                            <td><input type="number" name="v_stock[]" class="form-control form-control-sm text-center variant-stock" value="0"></td>
+
+                            <td>
+                                <select name="v_availability[]" class="form-select form-select-sm">
+                                    <option value="ready">Sẵn có</option>
+                                    <option value="coming_soon">Sắp về</option>
+                                    <option value="contact">Liên hệ</option>
+                                    <option value="preorder">Đặt trước</option>
+                                </select>
+                            </td>
+
+                            <td>
+                                <select name="v_status[]" class="form-select form-select-sm">
+                                    <option value="1">Mở bán</option>
+                                    <option value="0">Khóa</option>
+                                </select>
+                            </td>
+
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="openDescriptionModal(${i})">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <input type="hidden" name="v_technical_specifications[]" id="v-technical-specifications-input-${i}">
+                                <input type="hidden" name="v_description[]" id="v-description-input-${i}">
+                            </td>
+
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-danger border-0" onclick="this.closest('tr').remove()">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
                 });
                 document.getElementById('variants-preview').classList.remove('d-none');
             }
+
+            // Thêm sự kiện này vào ô input #product_name
+            document.getElementById('product_name').addEventListener('input', function() {
+                const newName = this.value.trim();
+                const rows = document.querySelectorAll('#variants-table-body tr');
+
+                rows.forEach(row => {
+                    const fullNameInput = row.querySelector('input[name="v_full_name[]"]');
+                    const suffixLabel = row.querySelector('small.text-muted'); // Cái dòng "Gốc: ..." bạn tạo
+
+                    if (fullNameInput && suffixLabel) {
+                        const suffix = suffixLabel.innerText.replace('Gốc: ', '');
+                        fullNameInput.value = `${newName} ${suffix}`;
+                    }
+                });
+            });
 
             // 7. Load thuộc tính khi chọn Category
             document.querySelectorAll('input[name="category_id"]').forEach(r => {
@@ -661,6 +818,7 @@
                     const container = document.getElementById('attributes-container');
                     container.innerHTML =
                         '<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div> Đang tải thuộc tính...</div>';
+
                     fetch(`/admin/product/cat/${r.value}/attributes`)
                         .then(res => res.json())
                         .then(data => {
@@ -670,35 +828,115 @@
                                 return;
                             }
                             container.innerHTML = data.map(attr => `
-                            <div class="attribute-group shadow-sm">
-                                <div class="attribute-name">
-                                    <i class="fa fa-th-large"></i> ${attr.name}
+                                <div class="attribute-group shadow-sm mb-3 p-3 border rounded">
+                                    <div class="attribute-name fw-bold mb-2">
+                                        <i class="fa fa-dot-circle text-primary me-2"></i>${attr.name}
+                                    </div>
+                                    <div class="chips-container d-flex flex-wrap gap-2">
+                                        ${attr.values.map(val => `
+                                                                                            <input type="checkbox" class="attribute-checkbox d-none" 
+                                                                                                id="attr_${val.id}" 
+                                                                                                value="${val.id}" 
+                                                                                                data-attr-id="${attr.id}" 
+                                                                                                data-name="${val.value}" 
+                                                                                                data-sku="${val.value_code || val.value}">
+                                                                                            <label for="attr_${val.id}" class="attribute-label border px-3 py-1 rounded cursor-pointer">
+                                                                                                ${val.value}
+                                                                                            </label>
+                                                                                        `).join('')}
+                                    </div>
                                 </div>
-                                <div class="chips-container">
-                                    ${attr.values.map(v => `
-                                                                                <div class="chip-item">
-                                                                                    <input class="attribute-checkbox" type="checkbox" value="${v.id}" 
-                                                                                        data-name="${v.value}" data-sku="${v.sku_code}" 
-                                                                                        data-attr-id="${attr.id}" id="v${v.id}">
-                                                                                    <label class="attribute-label" for="v${v.id}">
-                                                                                        ${v.value}
-                                                                                    </label>
-                                                                                </div>
-                                                                            `).join('')}
-                                </div>
-                            </div>
                             `).join('');
+                        })
+                        .catch(err => {
+                            container.innerHTML = '<p class="text-danger">Lỗi khi tải thuộc tính.</p>';
                         });
                 };
             });
 
+            // Biến lưu trữ index của biến thể đang được sửa
+            let currentEditVariantIndex = null;
+
+            // 1. Khởi tạo TinyMCE DUY NHẤT 1 lần cho Modal
+            tinymce.init({
+                selector: '#variant_description_editor',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | bold italic underline | link image | numlist bullist | removeformat',
+                height: 400,
+                setup: function(editor) {
+                    editor.on('change', function() {
+                        tinymce.triggerSave();
+                    });
+                }
+            });
+
+            // 2. Hàm mở Modal và nạp dữ liệu
+            function openDescriptionModal(index) {
+                currentEditVariantIndex = index;
+
+                // Lấy tên biến thể từ input đã tạo trong table
+                const variantNames = document.getElementsByName('v_full_name[]');
+                const variantName = variantNames[index] ? variantNames[index].value : "Không xác định";
+                document.getElementById('variant-name-display').innerText = variantName;
+
+                // Lấy dữ liệu từ input ẩn của dòng đó
+                const oldTechnicalSpecs = document.getElementById(`v-technical-specifications-input-${index}`).value;
+                const oldDescription = document.getElementById(`v-description-input-${index}`).value;
+
+                // Đổ dữ liệu vào các field trong Modal
+                document.getElementById('modal-v-technical-specifications').value = oldTechnicalSpecs;
+
+                // Nạp dữ liệu vào TinyMCE (Kiểm tra editor tồn tại để tránh lỗi)
+                if (tinymce.get('variant_description_editor')) {
+                    tinymce.get('variant_description_editor').setContent(oldDescription || '');
+                }
+
+                // Hiển thị Modal
+                var myModal = new bootstrap.Modal(document.getElementById('variantDescriptionModal'));
+                myModal.show();
+            }
+
+            // 3. Hàm lưu dữ liệu từ Modal vào lại biến thể
+            function saveVariantContent() {
+                const technicalSpecs = document.getElementById('modal-v-technical-specifications').value;
+                const description = tinymce.get('variant_description_editor').getContent();
+
+                // Ghi dữ liệu vào input hidden của biến thể tương ứng
+                document.getElementById(`v-technical-specifications-input-${currentEditVariantIndex}`).value = technicalSpecs;
+                document.getElementById(`v-description-input-${currentEditVariantIndex}`).value = description;
+
+                // Đóng modal
+                bootstrap.Modal.getInstance(document.getElementById('variantDescriptionModal')).hide();
+            }
+
+            // 4. Hàm áp dụng hàng loạt (Copy nội dung Modal cho toàn bộ biến thể)
+            function applyToAllVariants() {
+                if (!confirm('Bạn có chắc chắn muốn áp dụng Tóm tắt & Mô tả này cho TẤT CẢ các biến thể hiện có?')) return;
+
+                const technicalSpecs = document.getElementById('modal-v-technical-specifications').value;
+                const description = tinymce.get('variant_description_editor').getContent();
+
+                // Lặp qua tất cả các input ẩn của biến thể để ghi đè
+                document.querySelectorAll('input[name="v_technical_specifications[]"]').forEach(input => {
+                    input.value = technicalSpecs;
+                });
+                document.querySelectorAll('input[name="v_description[]"]').forEach(input => {
+                    input.value = description;
+                });
+
+                bootstrap.Modal.getInstance(document.getElementById('variantDescriptionModal')).hide();
+                alert('Đã cập nhật mô tả cho toàn bộ biến thể!');
+            }
+
+            // 8. Hàm áp dụng hàng loạt (Bulk Apply)
             function applyBulk() {
-                const p = document.getElementById('bulk-price').value;
-                const cp = document.getElementById('bulk-compare-at-price').value;
-                const s = document.getElementById('bulk-stock').value;
-                if (p) document.querySelectorAll('.variant-price').forEach(i => i.value = p);
-                if (cp) document.querySelectorAll('.variant-compare-price').forEach(i => i.value = cp);
-                if (s) document.querySelectorAll('.variant-stock').forEach(i => i.value = s);
+                const price = document.getElementById('bulk-price').value;
+                const comparePrice = document.getElementById('bulk-compare-at-price').value;
+                const stock = document.getElementById('bulk-stock').value;
+
+                if (price) document.querySelectorAll('.variant-price').forEach(i => i.value = price);
+                if (comparePrice) document.querySelectorAll('.variant-compare-price').forEach(i => i.value = comparePrice);
+                if (stock) document.querySelectorAll('.variant-stock').forEach(i => i.value = stock);
             }
         </script>
     @endpush

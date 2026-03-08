@@ -16,12 +16,16 @@ class ProductVariant extends Model
     protected $fillable = [
         'product_id',
         'sku',
+        // 'slug',
+        'technical_specifications',
+        'description',
+        'variant_full_name',
         'price',
-        'compare_at_price', 
+        'compare_at_price',
         'status',
         'availability',
         'stock_qty',
-        'variant_image'
+        'variant_image',
     ];
 
     protected $casts = [
@@ -40,10 +44,27 @@ class ProductVariant extends Model
 
     /**
      * QUAN TRỌNG: Quan hệ với Attribute Values (Dành cho EAV)
-     * Giả sử bạn có bảng trung gian là product_variant_attribute_value
      */
     public function attributeValues()
     {
         return $this->belongsToMany(AttributeValue::class, 'variant_attribute_values', 'variant_id', 'attribute_value_id');
+    }
+
+    public function getDisplayDescriptionAttribute()
+    {
+        if (!empty(trim($this->description))) {
+            return $this->description;
+        }
+
+        return optional($this->product)->description;
+    }
+
+    public function getDisplaySpecsAttribute()
+    {
+        if (!empty(trim($this->technical_specifications))) {
+            return $this->technical_specifications;
+        }
+
+        return optional($this->product)->technical_specifications;
     }
 }

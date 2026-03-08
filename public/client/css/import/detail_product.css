@@ -1,0 +1,911 @@
+/*DETAIL PRODUCT*/
+
+#detail-product-wp .thumb-wp,
+#detail-product-wp .thumb-respon-wp {
+    width: 50%;
+}
+
+#detail-product-wp .thumb-respon-wp {
+    border: 1px solid #c7c7c7;
+}
+
+#detail-product-wp .info {
+    width: 50%;
+    padding-left: 25px;
+}
+
+#post-product-wp {
+    position: relative;
+    width: 75%;
+}
+
+#detail-product-wp .section-detail {
+    background: #fff;
+    font-size: inherit;
+}
+
+#post-product-wp .section-detail {
+    background: #fff;
+    padding: 17px;
+    font-size: inherit;
+}
+
+/* #post-product-wp .section-detail.gradient {
+    background: linear-gradient(to top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+
+} */
+
+#main-thumb .zoomWrapper img,
+#detail-product-wp .owl-carousel .owl-item a img {
+    border: 1px solid #d9d9d9;
+}
+
+#imageZoom {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    /* Điều chỉnh chiều cao cho phù hợp */
+    height: 310px;
+}
+
+#image-slider-modal>.modal-content>.close-modal {
+    cursor: pointer;
+    position: absolute;
+    font-size: 46px;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+}
+
+.modal-content .spl-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.45);
+    /* border-radius: 8px 8px 0 0; */
+    /* Chỉ bo góc trên để phù hợp với modal */
+    opacity: 0;
+    /* Ẩn mặc định bằng opacity */
+    visibility: hidden;
+    /* Ẩn khỏi luồng tài liệu */
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    /* Hiệu ứng mượt mà */
+    z-index: 900;
+    /* Đảm bảo spl-header nằm dưới close-modal */
+}
+
+.modal-content:hover .spl-header {
+    opacity: 0.5;
+    visibility: visible;
+    /* Hiển thị khi hover */
+}
+
+/* #image-slider-modal>.modal-content.close-modal .image-slider:hover {
+    display: block;
+} */
+
+#list-thumb {
+    margin-top: 25px;
+}
+
+#detail-product-wp .owl-carousel .owl-item {
+    padding: 0px 4px;
+}
+
+#detail-product-wp .owl-carousel .owl-item a {
+    display: block;
+}
+
+#detail-product-wp .owl-controls {
+    position: relative;
+}
+
+#detail-product-wp .owl-controls .owl-buttons div {
+    position: absolute;
+    bottom: 42px;
+}
+
+#detail-product-wp .owl-controls .owl-buttons div.owl-next {
+    right: 0px;
+}
+
+#detail-product-wp .owl-controls .owl-buttons div.owl-prev {
+    left: -8px;
+}
+
+#detail-product-wp .owl-controls .owl-buttons div.owl-next:before,
+#detail-product-wp .owl-controls .owl-buttons div.owl-prev:before {
+    position: absolute;
+    font-family: 'Fontawesome';
+    top: 0;
+    left: 0;
+    font-size: 26px;
+    opacity: 0.5;
+}
+
+#detail-product-wp .owl-controls .owl-buttons div:hover:before {
+    opacity: 1;
+}
+
+#detail-product-wp .owl-controls .owl-buttons div.owl-next:before {
+    content: '\f105';
+}
+
+#detail-product-wp .owl-controls .owl-buttons div.owl-prev:before {
+    content: '\f104';
+}
+
+.thumb-respon-wp {
+    display: none;
+}
+
+#detail-product-wp .thumb-wp .product-name {
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+#detail-product-wp .info .desc p {
+    overflow-y: auto;
+    max-height: 130px;
+    min-height: 125px;
+    scrollbar-width: none;
+    color: #4a4a4a;
+    padding-bottom: 5px;
+}
+
+#detail-product-wp .info .desc p:last-child {
+    padding-bottom: 0;
+}
+
+#detail-product-wp .info .desc {
+    margin-bottom: 15px;
+}
+
+#detail-product-wp .info .num-product {
+    margin-bottom: 20px;
+}
+
+#detail-product-wp .info .num-product .title {
+    color: #666
+}
+
+#detail-product-wp .info .num-product .status {
+    display: inline-block;
+    background: #ddd;
+    padding: 0px 10px;
+}
+
+#detail-product-wp .info .price {
+    font-size: 28px;
+    font-family: 'Roboto Medium';
+    color: #f12a43;
+    margin-bottom: 15px;
+}
+
+#num-order-wp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 15px;
+    width: 150px;
+    height: 45px;
+    border: 1px solid #d1d5db;
+    /* background-color: rgb(247, 247, 247); */
+}
+
+#num-order-wp button {
+    width: 50px;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: none;
+}
+
+.num-order {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: none;
+    background: inherit;
+    font-weight: 700;
+    font-family: "Roboto Regular";
+    color: #545454;
+}
+
+#add-to-cart-container {
+    display: flex;
+    /* align-items: center; */
+    gap: 15px;
+}
+
+button.checkout,
+button.add-to-cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 45px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #e45464 -13%, #d70018);;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.1s ease;
+}
+
+/* Hover + Active effect */
+/* .checkout:hover,
+.add-to-cart:hover {
+    background-color: #b91c1c;
+} */
+
+.checkout:active,
+.add-to-cart:active {
+    transform: scale(0.98);
+}
+
+/* SVG icon color */
+.checkout svg path,
+.add-to-cart svg path {
+    fill: #fff;
+}
+
+/* Đảm bảo nếu bên trong có button thật thì nó không phá layout */
+.checkout button,
+.add-to-cart button {
+    /* background: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+    display: contents; */
+    /* giữ nguyên bố cục flex của cha */
+    cursor: pointer;
+}
+
+
+/* #minus,
+#plus {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #a0a0a0;
+    font-family: "Roboto Regular";
+    color: #515151;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+#minus:hover {
+    color: #3a9800;
+    border: 1px solid #3a9800;
+}
+
+#plus:hover {
+    color: #F00;
+    border: 1px solid #F00;
+} */
+
+/* #detail-product-wp .add-cart {
+    display: inline-block;
+    padding: 10px 30px;
+    font-size: 16px;
+    background: green;
+    color: #fff;
+    border-radius: 5px;
+    text-transform: uppercase;
+} */
+
+.num-product>.status-launching_soon,
+.num-product>.status-active {
+    color: #1b4c2f;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 5px;
+    padding: 4px 8px;
+    background-color: #dff9e8;
+}
+
+
+.num-product .status-out_of_stock {
+    color: #cc0f35;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 5px;
+    padding: 4px 8px;
+    background-color: #ffe6e1;
+}
+
+.num-product .status-preorder {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 5px;
+    padding: 4px 8px;
+    background-color: #7deeff;
+    /* Màu xanh dương cho "Đặt trước" */
+}
+
+.num-product .status-coming_soon {
+    color: #cc0f35;
+    /* font-weight: bold; */
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 5px;
+    padding: 4px 8px;
+    background-color: #ffe6e1;
+    /* Màu xám nhạt cho "Sắp về hàng" */
+}
+
+/* #detail-product-wp .add-cart:hover {
+    background: #006d00;
+} */
+
+#post-product-wp .section-title,
+#same-category-wp .section-title {
+    font-size: 20px;
+    margin: 35px 0px 20px 0px;
+    text-transform: uppercase;
+}
+
+#post-product-wp .section-detail p {
+    /* padding-bottom: 15px; */
+    color: #666;
+    text-align: justify;
+}
+
+.owl-item .thumb-item img {
+    border-radius: 0.5rem;
+    width: 71px;
+    height: 63px;
+    object-fit: cover;
+    /* Giữ tỉ lệ ảnh, thu nhỏ vừa khung */
+    display: block;
+    margin: 0 auto;
+}
+
+#post-product-wp .section-head {
+    position: relative;
+}
+
+#post-product-wp .section-detail.maxHeight {
+    max-height: 200px;
+}
+
+#post-product-wp .section-detail {
+    overflow: hidden;
+}
+
+/* .button-show-more {
+    background: linear-gradient(180deg, hsla(0, 0%, 100%, 0), hsla(0, 0%, 100%, .91) 50%, #fff 55%);
+    border-radius: 10px;
+    bottom: 0;
+    display: block;
+    left: 0;
+    margin-bottom: 0;
+    padding-top: 50px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    width: 100%;
+} */
+
+.b-gray {
+    background: #dfdfdf;
+    border-radius: 8px;
+    margin-top: 8px;
+    padding: 8px 16px;
+}
+
+.button-blur {
+    background: linear-gradient(180deg, transparent, #fff) !important;
+    border-radius: 10px;
+    bottom: 0;
+    display: block;
+    left: 0;
+    margin-bottom: 0;
+    padding-top: 50px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.button {
+    padding: 1rem 0;
+    color: #3b82f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.button span {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.button i {
+    margin-left: 8px;
+    font-size: 14px;
+    margin-top: 3px;
+}
+
+.d-none {
+    display: none;
+}
+
+/* Slider thumbnail */
+.main-image-slider-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+    /* Hiệu ứng chuyển động mượt */
+}
+
+.main-image-item {
+    min-width: 100%;
+    /* Mỗi ảnh chiếm toàn bộ chiều rộng của container */
+    height: 100%;
+    object-fit: contain;
+    /* Giữ tỉ lệ và căn giữa ảnh */
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Ẩn các nút điều hướng của slider modal */
+/* #image-slider-modal .slider-nav {
+    display: none;
+} */
+
+#list-thumb {
+    width: 100%;
+    margin-top: 20px;
+    position: relative;
+    display: block;
+    overflow: visible;
+}
+
+.list-thumb-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: block;
+}
+
+.list-thumb-wrapper {
+    display: flex;
+    overflow-x: auto;
+    align-items: center;
+    width: 100%;
+    transition: transform 0.3s ease;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.list-thumb-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.thumb-item {
+    /* margin: 0 10px; */
+    margin: 0 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.thumb-item img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.thumb-item.active img {
+    border-color: #d70018;
+}
+
+.slider-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    pointer-events: none;
+}
+
+.image-slider .slider-nav {
+    z-index: 1;
+}
+
+.prev-btn,
+.next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #acadaf8c;
+    color: white;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* z-index: 15; */
+    transition: background 0.3s ease;
+    pointer-events: auto;
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.swiper-button-prev {
+    backdrop-filter: blur(1px);
+    height: calc(100% - 2px);
+    margin-top: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    left: 0px;
+    position: absolute;
+}
+
+.prev-btn {
+    left: 0px;
+}
+
+.swiper-button-next {
+    backdrop-filter: blur(1px);
+    height: calc(100% - 2px);
+    margin-top: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    right: 0px;
+    position: absolute;
+}
+
+.next-btn {
+    right: 0px;
+}
+
+.prev-btn i,
+.next-btn i {
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .thumb-item img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .prev-btn,
+    .next-btn {
+        width: 25px;
+        height: 25px;
+        padding: 6px;
+    }
+
+    .prev-btn i,
+    .next-btn i {
+        font-size: 14px;
+    }
+
+    .prev-btn {
+        left: -10px;
+    }
+
+    .next-btn {
+        right: -10px;
+    }
+}
+
+/* Modal slider */
+.modal {
+    display: none;
+    position: fixed;
+    backdrop-filter: blur(3px);
+    background: rgba(0, 0, 0, .6);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    margin: 50px auto;
+    width: 77%;
+    background: black;
+    border-radius: 0px;
+    /* padding: 20px; */
+    text-align: center;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 40px;
+    cursor: pointer;
+    color: #6c6c6c;
+    transition: all 0.3s ease-in-out;
+    z-index: 1001;
+}
+
+.spl-header .close-modal:hover {
+    color: #fff !important;
+}
+
+.image-slider {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 600px;
+}
+
+.slider-item {
+    display: none;
+    width: 100%;
+}
+
+.slider-item img {
+    transform: translateY(2.5rem);
+    min-width: 400px;
+    height: 520px;
+    margin: 0 auto;
+}
+
+.slider-item.active {
+    display: block;
+}
+
+.image-slider .prev-btn {
+    left: 10px;
+}
+
+.image-slider .next-btn {
+    right: 10px;
+}
+
+/* Base style cho nội dung trong CKEditor */
+#post-product-wp .section-detail {
+    font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #222;
+    word-break: break-word;
+}
+
+/* Heading */
+#post-product-wp .section-detail h1,
+#post-product-wp .section-detail h2,
+#post-product-wp .section-detail h3,
+#post-product-wp .section-detail h4,
+#post-product-wp .section-detail h5,
+#post-product-wp .section-detail h6 {
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0px 0 16px;
+    color: #111;
+}
+
+#post-product-wp .section-detail h1 {
+    font-size: 24px;
+}
+
+#post-product-wp .section-detail h2 {
+    font-size: 21px;
+}
+
+#post-product-wp .section-detail h3 {
+    font-size: 18px;
+}
+
+#post-product-wp .section-detail h4 {
+    font-size: 16px;
+}
+
+#post-product-wp .section-detail h5 {
+    font-size: 14px;
+}
+
+#post-product-wp .section-detail h6 {
+    font-size: 12px;
+}
+
+/* Paragraph */
+#post-product-wp .section-detail p {
+    margin: 0 0 16px;
+}
+
+/* Bold & Italic */
+#post-product-wp .section-detail strong {
+    font-weight: 600;
+}
+
+#post-product-wp .section-detail em {
+    font-style: italic;
+}
+
+/* List */
+#post-product-wp .section-detail ul,
+#post-product-wp .section-detail ol {
+    padding-left: 20px;
+    margin: 0 0 16px 0;
+}
+
+#post-product-wp .section-detail ul li {
+    list-style: initial !important;
+    margin-bottom: 6px;
+}
+
+#post-product-wp .section-detail ol li {
+    list-style: decimal;
+    margin-bottom: 6px;
+}
+
+#post-product-wp .section-detail a {
+    pointer-events: none;
+    /* Không cho click */
+    cursor: default;
+    /* Chuột không đổi hình bàn tay */
+    color: inherit;
+    /* Màu chữ như text bình thường */
+    text-decoration: none;
+    /* Bỏ gạch chân */
+}
+
+/* Blockquote */
+#post-product-wp .section-detail blockquote {
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: #f9f9f9;
+    border-left: 4px solid #007bff;
+    font-style: italic;
+    color: #555;
+}
+
+/* Table */
+#post-product-wp .section-detail table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Gộp các đường viền của ô lại với nhau */
+    margin: 20px 0;
+    font-size: 15px;
+    table-layout: fixed;
+    /* Rất quan trọng: Giúp phân bổ chiều rộng các cột đều nhau */
+}
+
+/* Style cho các ô */
+#post-product-wp .section-detail table th,
+#post-product-wp .section-detail table td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    /* Tăng padding để bảng có không gian hơn */
+    text-align: left;
+    vertical-align: top;
+    /* Căn nội dung lên trên cùng của ô */
+}
+
+#post-product-wp .section-detail table th {
+    background-color: #f1f1f1;
+    /* Nền xám nhạt cho tiêu đề */
+    font-weight: 600;
+    color: #333;
+    /* Màu chữ đậm hơn một chút */
+}
+
+
+
+/* Image */
+#post-product-wp .section-detail img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 16px auto;
+}
+
+/* Caption cho hình ảnh */
+#post-product-wp .section-detail figure {
+    margin: 16px 0;
+    text-align: center;
+}
+
+#post-product-wp .section-detail figcaption {
+    font-size: 14px;
+    color: #666;
+    margin-top: 6px;
+}
+
+.tab-header {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    padding: 0 10px;
+    gap: 10px;
+}
+
+.tab-btn {
+    padding: 14px 18px;
+    cursor: pointer;
+    color: #555;
+    font-weight: 600;
+    font-size: 16px;
+    /* transition: all 0.25s ease; */
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: #e60000;
+}
+
+.tab-btn.active {
+    color: #e60000;
+    font-weight: 600;
+}
+
+/* Gạch đỏ mảnh, thanh lịch hơn */
+.tab-btn.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+    background: #e60000;
+    border-radius: 1px;
+}
+
+/* Nội dung */
+.tab-container {
+    padding: 25px;
+    background: #fafafa;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: 1px solid #eee;
+}
+
+.tab-content {
+    display: none;
+    /* animation: fadeIn 0.3s ease-in-out; */
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

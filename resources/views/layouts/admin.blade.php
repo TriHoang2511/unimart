@@ -123,8 +123,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-link {{ request()->routeIs('admin.order.list') ? 'active' : '' }}">
-                        <a href="{{ url('admin/order/list') }}">
+                    <li class="nav-link {{ request()->routeIs('admin.order.index') ? 'active' : '' }}">
+                        <a href="{{ route('admin.order.index') }}">
                             <div class="nav-link-icon d-inline-flex">
                                 <i class="far fa-folder"></i>
                             </div>
@@ -134,7 +134,7 @@
                             class="arrow fas {{ request()->routeIs('admin.order.*') ? 'fa-angle-down' : 'fa-angle-right' }}">
                         </i>
                         <ul class="sub-menu">
-                            <li><a href="{{ url('admin/order/list') }}">Đơn hàng</a></li>
+                            <li><a href="{{ route('admin.order.index') }}">Đơn hàng</a></li>
                         </ul>
                     </li>
                     <li class="nav-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}">

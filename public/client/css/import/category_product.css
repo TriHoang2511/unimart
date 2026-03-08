@@ -1,0 +1,270 @@
+/*CATEGOGRY PRODUCT*/
+#breadcrumb-wp {
+    margin-bottom: 20px;
+}
+
+#breadcrumb-wp ul.list-item {
+    display: flex;
+    flex-wrap: nowrap;
+    /* Không xuống dòng */
+    white-space: nowrap;
+    /* Giữ các phần tử li trên cùng 1 dòng */
+    overflow-x: auto;
+    /* Cho phép cuộn ngang */
+}
+
+#breadcrumb-wp .list-item li a {
+    position: relative;
+    color: #333;
+    padding-left: 20px;
+    line-height: normal;
+    font-size: 14px;
+    /* font-weight: 600; */
+}
+
+#breadcrumb-wp .list-item li:first-child a:before {
+    position: absolute;
+    content: '\f015';
+    font-family: 'FontAwesome';
+    top: 1px;
+    left: 0;
+    line-height: normal;
+}
+
+#breadcrumb-wp .list-item li:nth-child(n+2) a:before {
+    position: absolute;
+    content: '\f105';
+    font-family: 'FontAwesome';
+    top: 1px;
+    left: 8px;
+    line-height: normal;
+}
+
+/* BREADCRUMB CURRENT ITEM (THẺ <p>) */
+#breadcrumb-wp .list-item li.current p {
+    display: inline-flex;
+    position: relative;
+    color: #707070;
+    padding-left: 20px;
+    line-height: normal;
+    font-size: 14px;
+    /* font-weight: 600; */
+    margin: 0;
+}
+
+/* Thêm icon ">" trước tên sản phẩm cuối cùng */
+#breadcrumb-wp .list-item li.current p:before {
+    position: absolute;
+    content: '\f105';
+    /* FontAwesome arrow */
+    font-family: 'FontAwesome';
+    top: 1px;
+    left: 8px;
+    line-height: normal;
+    color: #333;
+}
+
+.filter-sort-list {
+    display: flex;
+    gap: 16px;
+}
+
+.filter-sort-list a {
+    cursor: pointer;
+}
+
+.filter-sort-list .button-sort {
+    align-items: center;
+    background-color: #f7f7f8;
+    border-radius: 50px;
+    box-shadow: 0 0 0 1px #e4e4e7;
+    color: #1d1d20;
+    display: flex;
+    font-size: 14px;
+    gap: 0;
+    padding: 8px 12px;
+    transition: color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.filter-sort-list .button-sort.active {
+    background: #eff5ff;
+    box-shadow: 0 0 0 1px #3b82f6;
+    color: #3b82f6;
+}
+
+/* Icon wrapper */
+.filter-sort-list .button-sort .icon {
+    align-items: center;
+    display: inline-flex;
+    height: 1.5rem;
+    justify-content: center;
+    width: 1.5rem;
+    margin-right: 6px;
+    /* thêm nhẹ khoảng cách giữa icon và chữ */
+}
+
+/* Làm icon chuyển màu mượt khi đổi trạng thái */
+.filter-sort-list .button-sort .icon svg path {
+    transition: stroke 0.3s, fill 0.3s;
+}
+
+#product-content #list-product-wp {
+    margin-bottom: 30px;
+}
+
+#product-content .list-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 16px;
+}
+
+#product-content .section-detail .list-item li {
+    flex: 0 0 calc(20% - 12.8px);
+}
+
+/* #product-content .section-detail .list-item li:nth-child(4n) {
+    margin-right: inherit;
+} */
+
+.category-product-page #list-product-wp .section-title {
+    margin: 0;
+    margin-bottom: 40px;
+}
+
+.category-product-page #list-product-wp .filter-sort {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    width: 100%;
+    /* Đảm bảo chiếm full width */
+}
+
+.filter-sort .filter-sort-title {
+    color: #18181b;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.filter-wp {
+    margin-left: auto;
+}
+
+.filter-wp .desc {
+    margin-bottom: 5px;
+    color: #666;
+    text-align: right;
+}
+
+.filter-wp form select {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #cecece;
+    color: #666;
+}
+
+.filter-wp form button {
+    position: relative;
+    left: -4px;
+    background: #bebebe;
+    border: none;
+    outline: none;
+    padding: 3px 15px;
+    line-height: 25px;
+    color: #fff;
+}
+
+.filter-wp form button:hover {
+    background: #a2a2a2;
+}
+
+#filter-product-wp {
+    background: #fff;
+}
+
+#filter-product-wp .section-detail {
+    padding: 15px 20px;
+}
+
+#filter-product-wp .section-detail table {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+#filter-product-wp .section-detail table thead tr td {
+    font-size: 16px;
+    color: #000;
+    padding-bottom: 10px;
+}
+
+#filter-product-wp .section-detail table tbody tr td {
+    padding-bottom: 5px;
+}
+
+#paging-wp {
+    text-align: center;
+}
+
+#paging-wp .list-item {
+    display: inline-block;
+}
+
+#paging-wp .list-item li {
+    float: left;
+    margin-right: 5px;
+}
+
+#paging-wp .list-item li:last-child {
+    margin-right: 0;
+}
+
+#paging-wp .list-item li a {
+    background: #ababab;
+    padding: 8px 12px;
+    color: #fff;
+}
+
+#paging-wp .list-item li a:hover {
+    background: #868686;
+}
+
+#btn-show-more {
+    align-items: center;
+    background: #eff5ff;
+    border: none;
+    border-radius: 8px;
+    color: #3b82f6;
+    cursor: pointer;
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    height: 48px;
+    justify-content: center;
+    margin: 0 auto 24px;
+    max-width: 260px;
+    padding: 12px 16px;
+    transition: .3s;
+}
+
+@media screen and (max-width: 1200px) {
+    #product-content .section-detail .list-item li {
+        flex: 0 0 calc(25% - 12px);
+    }
+}
+
+@media screen and (max-width: 990px) {
+    #product-content .section-detail .list-item li {
+        flex: 0 0 calc(33.33333% - 10.66667px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #product-content .section-detail .list-item li {
+        flex: 0 0 calc(50% - 8px);
+    }
+
+    .filter-sort .filter-sort-title {
+        display: none;
+    }
+}
+

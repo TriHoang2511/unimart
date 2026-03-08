@@ -79,7 +79,7 @@
                                             @forelse($attr->values as $val)
                                                 <span class="badge badge-light border mr-1 mb-1 p-2">
                                                     {{ $val->value }}
-                                                    <span class="text-primary">({{ $val->sku_code }})</span>
+                                                    <span class="text-primary">({{ $val->value_code }})</span>
 
                                                     <form
                                                         action="{{ route('admin.product.attributes.values.destroy', $val->id) }}"
@@ -107,7 +107,7 @@
                                                     class="form-control form-control-sm mr-1" placeholder="Tên (Đỏ)"
                                                     required>
 
-                                                <input type="text" name="sku_code"
+                                                <input type="text" name="value_code"
                                                     class="form-control form-control-sm sku-input" placeholder="SKU (RED)"
                                                     maxlength="10" required>
 

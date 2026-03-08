@@ -1,0 +1,814 @@
+/*HEADER*/
+#header-wp {
+    top: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    display: block;
+    background: linear-gradient(180deg, #e45464 -13%, #d70018);
+}
+
+#head-top {
+    /* background: #d9263c; */
+}
+
+#head-top #main-menu li {
+    float: left;
+}
+
+#head-top #payment-link {
+    position: relative;
+    display: block;
+    color: #fff;
+    padding: 5px 0px 5px 20px;
+}
+
+#head-top #payment-link:before {
+    position: absolute;
+    content: '\f0c1';
+    /* font-family: 'FontAwesome'; */
+    top: 10px;
+    left: 0;
+}
+
+#head-top #main-menu li a {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    color: #fff;
+    padding: 5px 15px;
+}
+
+#head-top #main-menu li:last-child a {
+    padding-right: 0 !important;
+}
+
+#head-body {
+    /* background: #f12a43; */
+    position: relative;
+    padding: 10px 0px;
+}
+
+#head-body #logo {
+    display: block;
+    /* width: 130px; */
+    margin-right: 5px;
+}
+
+#head-body #logo img {
+    height: 3em;
+}
+
+/* Bố cục wp-inner (Thêm flexbox để thay thế float, giữ tương thích) */
+#head-body .wp-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    flex-wrap: nowrap;
+}
+
+/* Nút Danh Mục (Cập nhật: Bo góc lớn đỏ, hover mượt, xoay mũi tên SVG) */
+#head-body .navbar__item.button__menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(0deg, var(--bg-primary-bold, #e45464), var(--bg-primary-bold, #e45464));
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    white-space: nowrap;
+    margin: 0 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#head-body .navbar__item.button__menu:hover {
+    background: #c60015;
+}
+
+/* #head-body .navbar__item.button__menu svg:last-child {
+    transition: transform 0.3s ease;
+}
+
+#head-body .navbar__item.button__menu:hover svg:last-child {
+    transform: rotate(180deg);
+} */
+/* Dropdown Danh Mục (Ẩn mặc định, định vị absolute dưới nút) */
+
+
+/* =============================== DROPDOWN DANH MỤC ==================================== */
+/* Dropdown danh mục chính */
+#head-body .category-dropdown {
+    top: 100%;
+    margin-top: 28px;
+    display: none;
+    position: absolute;
+    left: 0;
+    width: 23%;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    z-index: 9999;
+}
+
+/* Khi bấm nút thì hiển thị */
+#head-body .category-dropdown.active {
+    display: block;
+}
+
+/* Hover hiển thị submenu cấp 2 */
+#category-product-wp .list-item li {
+    position: relative;
+}
+
+/* #category-product-wp .list-item li .sub-menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    width: 250px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+} */
+
+#category-product-wp .list-item li:hover>.sub-menu {
+    display: block;
+}
+
+/* --- ICON HOẶC ARROW BÊN PHẢI --- */
+#head-body .category-dropdown .list-item li a .icon {
+    font-size: 13px;
+    color: #999;
+    transition: color 0.25s ease;
+}
+
+#head-body .category-dropdown .list-item li a:hover .icon {
+    color: #d70018;
+}
+
+/* --- SCROLLBAR --- */
+#head-body .category-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+#head-body .category-dropdown::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+
+/* --- RESPONSIVE --- */
+/* @media (max-width: 992px) {
+  #head-body .category-dropdown {
+    width: 100%;
+    position: static;
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    margin-top: 0;
+    transform: none;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #head-body .category-dropdown .list-item li a {
+    padding: 14px 16px;
+    font-size: 16px;
+    border-left: none;
+  }
+
+  #head-body .category-dropdown .list-item li a:hover {
+    background: #f3f3f3;
+    color: #d70018;
+  }
+} */
+/* ========================================================== */
+
+.navbar__item-text {
+    font-weight: 500;
+}
+
+#head-body #search-wp {
+    flex: 1;
+    max-width: 500px;
+    padding-left: 0;
+    margin: 0 15px;
+}
+
+#head-body #search-wp form {
+    position: relative;
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 45px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+#head-body #search-wp #s {
+    display: inline-block;
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: "Roboto", "Arial", sans-serif;
+    padding: 0 18px;
+    line-height: 45px;
+    background: transparent;
+    font-size: 14px;
+}
+
+#s::placeholder {
+    color: #aaa;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Roboto", "Arial", sans-serif;
+    opacity: 0.7;
+}
+
+#head-body #search-wp #sm-s {
+    position: static;
+    border: none;
+    outline: none;
+    background: inherit;
+    padding: 0;
+    line-height: 45px;
+    font-size: 14px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#head-body #search-wp #sm-s i {
+    /* color: white; */
+    padding: 0;
+    background-color: transparent;
+    font-size: 18px;
+}
+
+#action-wp {
+    display: flex;
+}
+
+/* #head-body #search-wp #sm-s:hover{ background: #444444;} */
+#advisory-wp {
+    position: relative;
+    padding: 0px 30px 0px 50px;
+}
+
+#advisory-wp:before {
+    position: absolute;
+    content: '\f2a0';
+    font-family: 'FontAwesome';
+    top: 50%;
+    left: 0px;
+    font-size: 18px;
+    color: #fff;
+    width: 38px;
+    height: 38px;
+    line-height: 35px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    text-align: center;
+    transform: translateY(-50%);
+}
+
+#advisory-wp:after {
+    position: absolute;
+    content: '';
+    width: 1px;
+    height: 50%;
+    background: #da263c;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+#advisory-wp span {
+    position: relative;
+    display: block;
+    color: #fff;
+}
+
+#advisory-wp .title {
+    font-size: 15px;
+}
+
+#advisory-wp .phone {
+    font-family: 'Roboto Bold';
+    font-size: 16px;
+}
+
+#cart-wp,
+#cart-respon-wp {
+    position: relative;
+    display: block;
+    color: #fff;
+    align-content: center;
+    padding: 0px 0px 0px 20px;
+}
+
+#cart-wp i {
+    font-size: 20px;
+}
+
+#cart-respon-wp i {
+    font-size: 18px;
+}
+
+#cart-wp i,
+#cart-respon-wp i {
+    width: 37px;
+    height: 37px;
+    line-height: 33px;
+    position: relative;
+    text-align: center;
+    /* border: 2px solid #fff; */
+    border-radius: 50%;
+}
+
+#cart-wp #num {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ee8000;
+    padding: 2px 6px;
+    /* Giữ padding, nhưng có thể tăng nếu cần */
+    border-radius: 50%;
+    /* Đảm bảo hình tròn */
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    font-size: 13px;
+    font-family: 'Roboto Medium';
+    width: 20px;
+    /* Cố định chiều rộng */
+    height: 20px;
+    /* Cố định chiều cao */
+    line-height: normal;
+    /* Giữ nguyên */
+    text-align: center;
+    /* Đảm bảo căn giữa văn bản */
+}
+
+#cart-respon-wp #num {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ee8000;
+    padding: 2px 6px;
+    /* Giữ padding, nhưng có thể tăng nếu cần */
+    border-radius: 50%;
+    /* Đảm bảo hình tròn */
+    position: absolute;
+    top: 13px;
+    right: -2px;
+    font-size: 13px;
+    font-family: 'Roboto Medium';
+    width: 20px;
+    /* Cố định chiều rộng */
+    height: 20px;
+    /* Cố định chiều cao */
+    line-height: normal;
+    /* Giữ nguyên */
+    text-align: center;
+    /* Đảm bảo căn giữa văn bản */
+}
+
+#cart-respon-wp {
+    display: none;
+}
+
+#num-respon {
+    position: absolute;
+    top: 10px;
+    right: -5px;
+    background: orange;
+    padding: 0px 8px;
+    border-radius: 12px;
+}
+
+#cart-wp {
+    position: relative;
+    cursor: pointer;
+}
+
+#cart-wp #dropdown {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 90px;
+    right: 0;
+    width: 260px;
+    /* CẢI TIẾN: Tăng nhẹ độ rộng để phù hợp nội dung dài hơn */
+    min-height: 250px;
+    max-height: 450px;
+    /* CẢI TIẾN: Giới hạn chiều cao tối đa để tránh che khuất toàn bộ giao diện */
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    /* CẢI TIẾN: Thêm bo góc nhẹ để hiện đại hơn */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* CẢI TIẾN: Thêm bóng đổ để tách biệt với nền */
+    transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -webkit-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    /* CẢI TIẾN: Ẩn nội dung tràn */
+}
+
+a.checkout{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(180deg, #e45464 -13%, #d70018);;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+#cart-wp:hover #dropdown {
+    top: 70px;
+    opacity: 1;
+    visibility: visible;
+}
+
+#cart-wp .list-cart {
+    margin-bottom: 15px;
+    min-height: 190px;
+    max-height: 300px;
+    /* CẢI TIẾN: Giới hạn chiều cao danh sách sản phẩm */
+    overflow-y: auto;
+    /* CẢI TIẾN: Thêm thanh cuộn dọc khi vượt quá giới hạn (chỉ hiển thị khi cần) */
+    scrollbar-width: thin;
+    /* CẢI TIẾN: Thanh cuộn mỏng cho Firefox */
+    scrollbar-color: #ccc transparent;
+}
+
+#cart-wp .list-cart::-webkit-scrollbar {
+    width: 6px;
+    /* CẢI TIẾN: Thanh cuộn mỏng cho Chrome/Safari */
+}
+
+#cart-wp .list-cart::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#cart-wp .list-cart::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+#cart-wp .list-cart li {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    /* CẢI TIẾN: Sử dụng flexbox để sắp xếp gọn gàng hơn */
+    align-items: center;
+}
+
+#cart-wp .list-cart li:last-child {
+    margin-bottom: 0 !important;
+    border-bottom: none;
+    padding-bottom: 0 !important;
+}
+
+#cart-wp .list-cart .thumb {
+    width: 23%;
+    flex-shrink: 0;
+    /* CẢI TIẾN: Không co lại hình ảnh */
+}
+
+#cart-wp .list-cart .thumb img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    /* CẢI TIẾN: Bo góc hình ảnh */
+}
+
+#cart-wp .list-cart .info {
+    line-height: 1.5;
+    width: 75%;
+    padding-left: 15px;
+    flex: 1;
+    /* CẢI TIẾN: Linh hoạt chiều rộng */
+}
+
+#cart-wp #dropdown .desc {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#cart-wp #dropdown .desc span {
+    color: #d9263c;
+    font-family: 'Roboto Medium';
+}
+
+#cart-wp #dropdown .list-cart .info .product-name {
+    display: block;
+    font-size: 13px;
+    color: #333;
+    overflow: hidden;
+    font-weight: 600;
+    /* CẢI TIẾN: Ẩn text dài */
+    text-overflow: ellipsis;
+    /* CẢI TIẾN: Thêm dấu ... cho text dài */
+    white-space: nowrap;
+    /* CẢI TIẾN: Không xuống dòng */
+    margin-bottom: 3px;
+}
+
+/* #cart-wp #dropdown .list-cart .info .price {
+    display: block;
+    font-family: 'Roboto Medium';
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 2px;
+} */
+
+#cart-wp #dropdown .list-cart .info .qty {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    /* font-family: 'Roboto Light'; */
+    color: #7f7f7f;
+}
+
+#cart-wp #dropdown .total-price {
+    text-transform: uppercase;
+    /* font-family: 'Roboto Medium'; */
+    font-size: 15px;
+    margin-bottom: 15px;
+    color: #000;
+    line-height: normal;
+}
+
+#cart-wp #dropdown .action-cart a {
+    justify-content: center;
+    display: flex;
+    padding: 5px 20px;
+    /* background-color: #fcf2f2;
+    border: 1px solid #d7000f;
+    color: #d7000f; */
+    color: #fff;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+/* HEADER - GIÁ SẢN PHẨM */
+#cart-wp #dropdown .list-cart .info .price {
+    display: flex;
+    /* font-family: 'Roboto Medium', sans-serif; */
+    color: #333;
+    margin-bottom: 2px;
+}
+
+#cart-wp #dropdown .list-cart .info .price .new {
+    /* font-family: 'Roboto Medium', sans-serif; */
+    font-size: 15px;
+    color: #333;
+}
+
+#cart-wp #dropdown .list-cart .info .price .sale-price {
+    /* font-family: 'Roboto Medium', sans-serif; */
+    font-size: 14px;
+    color: #d9263c;
+}
+
+#cart-wp #dropdown .list-cart .info .price .base-price {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 5px;
+}
+
+/* Container chung cho giỏ hàng */
+#cart-btn-wp {
+    background: black;
+    padding: 5px 13px;
+    border-radius: 29px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Icon giỏ hàng */
+#btn-cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#btn-cart i {
+    font-size: 17px;
+    width: 37px;
+    height: 37px;
+    line-height: 37px;
+    text-align: center;
+    border-radius: 50%;
+}
+
+/* Chữ Giỏ hàng */
+#cart-btn-wp .cart {
+    font-size: 17px;
+    padding-left: 5px;
+}
+
+
+
+/* CẢI TIẾN: Responsive cho mobile - Ẩn dropdown phức tạp, ưu tiên #cart-respon-wp */
+@media (max-width: 1024px) {
+    #head-body .wp-inner {
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 768px) {
+    #cart-wp #dropdown {
+        width: 100%;
+        max-height: 60vh;
+        /* CẢI TIẾN: Giới hạn theo chiều cao viewport trên mobile */
+        right: auto;
+        left: 0;
+    }
+
+    #cart-respon-wp {
+        display: block;
+    }
+
+    /* Hiển thị phiên bản mobile */
+    #cart-wp {
+        display: none;
+    }
+
+    #head-body #search-wp {
+        padding-left: 0;
+        margin: 0;
+        flex: 1;
+    }
+
+    /* Ẩn nút danh mục trên mobile */
+    #head-body .navbar__item.button__menu {
+        display: none;
+    }
+}
+
+/*==================================== RUNNING THE LEGACY AND INFORMATION ABOUT SHOP ==================================== */
+.benefits {
+    position: relative;
+    overflow: hidden;
+    width: 74%;
+    padding: 5px 0;
+    flex: 1;
+    white-space: nowrap;
+    max-width: 60%;
+}
+
+.benefits-inner {
+    display: flex;
+    gap: 20px;
+    white-space: nowrap;
+    animation: scroll-left 5s linear infinite;
+}
+
+.benefit {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.benefit i {
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .benefits {
+        width: 100%;
+    }
+
+    #main-menu-wp {
+        display: none;
+    }
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+/* ========== HEADER TOP ========== */
+#head-top .wp-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+/* ===== BENEFITS (chạy chữ bên trái) ===== */
+#head-top .benefits {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    max-width: 60%;
+}
+
+#head-top .benefit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+#head-top .benefit i {
+    font-size: 14px;
+}
+
+/* ===== MENU BÊN PHẢI ===== */
+#head-top #main-menu-wp ul {
+    display: flex;
+    align-items: center;
+}
+
+/* ===== HIỆU ỨNG CHẠY NGANG ===== */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* ========== RESPONSIVE ========== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    #head-top .wp-inner {
+        gap: 10px;
+    }
+
+    #head-top .benefits {
+        max-width: 70%;
+    }
+
+    #head-top #main-menu-wp ul {
+        gap: 15px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #head-top .wp-inner {
+        justify-content: center;
+    }
+
+    /* Benefits full width */
+    #head-top .benefits {
+        max-width: 100%;
+    }
+
+    /* Ẩn menu */
+    #head-top #main-menu-wp {
+        display: none;
+    }
+}
