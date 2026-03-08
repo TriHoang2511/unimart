@@ -20,13 +20,14 @@ class Product extends Model
         'name',
         'sku',
         'slug',
-        'summary',
+        'technical_specifications',
         'description',
         'brand',
         'featured_image',     // Khớp với DB của bạn thay vì thumbnail
         'meta_title',
         'meta_description',
         'status',
+        'default_variant_id'
     ];
 
     /**
@@ -70,11 +71,17 @@ class Product extends Model
         return $this->hasMany(ProductImage::class, 'product_id');
     }
 
+    public function defaultVariant()
+    {
+        // Giả sử tên cột trong bảng products là default_variant_id
+        return $this->belongsTo(ProductVariant::class, 'default_variant_id');
+    }
+
     /**
      * Scope để lấy các sản phẩm đang hiển thị (Active)
      */
-    public function scopePublished($query)
-    {
-        return $query->where('status', 'published');
-    }
+    // public function scopePublished($query)
+    // {
+    //     return $query->where('status', 'published');
+    // }
 }

@@ -520,7 +520,7 @@
                                                 <table class="table table-sm table-bordered align-middle">
                                                     <thead class="table-light small">
                                                         <tr>
-                                                            <th>SKU</th>
+                                                            <th>Tên biến thể</th>
                                                             <th>Ảnh</th>
                                                             <th>Phân loại</th>
                                                             <th width="180">Giá bán (₫)</th>
@@ -533,7 +533,7 @@
                                                         @foreach ($product->variants as $variant)
                                                             <tr class="variant-item"
                                                                 data-variant-id="{{ $variant->id }}">
-                                                                <td class="small fw-bold">{{ $variant->sku }}</td>
+                                                                <td class="small fw-bold">{{ $variant->variant_full_name }}</td>
                                                                 <td>
                                                                     <img src="{{ $variant->variant_image ? asset('storage/' . $variant->variant_image) : asset('storage/app/public/products/Image_Placeholder.jpg') }}"
                                                                         class="img-preview" width="45"

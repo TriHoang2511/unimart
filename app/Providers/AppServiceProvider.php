@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View; // Phải có dòng này
+use App\Models\ProductCategory;     // Model lấy dữ liệu danh mục
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,5 +39,16 @@ class AppServiceProvider extends ServiceProvider
         //         return $user->hasPermissionTo($permission->name);
         //     });
         // }
+        // Cấu trúc: View::composer('tên_view_muốn_nhận_data', 'hành_động');
+
+        View::composer('client.layouts.app', function ($view) {
+            // 1. Lấy dữ liệu từ DB (giống hệt cách bạn làm trong Controller)
+            $categories = ProductCategory::where('status', 1)
+                ->whereNull('parent_id')
+                ->get();
+
+            // 2. "Bơm" dữ liệu vào View với tên biến là 'categories'
+            $view->with('categories', $categories);
+        });
     }
 }

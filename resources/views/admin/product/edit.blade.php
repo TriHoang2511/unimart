@@ -180,50 +180,106 @@
             color: #4361ee;
         }
 
-        /* ============================================================
-                                            VARIANT TABLE STYLE
-                        ============================================================ */
+        /* ================= VARIANT TABLE ================= */
+        .variant-wrapper {
+            overflow-x: auto;
+        }
+
+        .variant-table {
+            min-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
         .variant-table thead {
             background: #f8fafc;
         }
 
         .variant-table th {
-            text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 0.5px;
             font-weight: 600;
-            color: #555;
-            vertical-align: middle;
-            border-top: none;
-            padding: 10px 5px !important;
-            /* Dùng bản rút gọn để kiểm soát chính xác độ hẹp */
+            text-transform: uppercase;
+            color: #64748b;
+            padding: 10px 8px;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
         }
 
         .variant-table td {
-            padding: 8px 5px !important;
+            padding: 8px;
             vertical-align: middle;
         }
 
+        /* Cột */
+        .col-img {
+            width: 70px;
+        }
+
+        .col-variant {
+            width: 180px;
+        }
+
+        .col-name {
+            width: 260px;
+        }
+
+        .col-slug {
+            width: 150px;
+        }
+
+        .col-sku {
+            width: 150px;
+        }
+
+        .col-price {
+            width: 120px;
+        }
+
+        .col-stock {
+            width: 80px;
+        }
+
+        .col-select {
+            width: 140px;
+        }
+
+        .col-action {
+            width: 40px;
+        }
+
+        /* Input gọn */
         .variant-table .form-control,
         .variant-table .form-select {
-            padding: 0.4rem 0.5rem;
-            font-size: 0.85rem;
+            font-size: 13px;
+            padding: 4px 6px;
             border-radius: 4px;
         }
 
-        /* Slot ảnh biến thể */
+        /* Tên biến thể */
+        .variant-meta {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        /* Ảnh */
         .variant-img-slot {
-            width: 45px;
-            height: 45px;
-            border: 1px dashed #ccc;
+            width: 44px;
+            height: 44px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #f8fafc;
             cursor: pointer;
-            border-radius: 4px;
-            background: #f9f9f9;
-            margin: 0 auto;
-            /* Căn giữa trong ô */
+        }
+
+        .variant-img-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 
@@ -264,9 +320,16 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="product_slug" class="form-control bg-light"
-                                        readonly value="{{ old('slug', $product->slug) }}">
+                                    <label class="form-label">Slug (Đường dẫn)</label>
+                                    <div class="input-group">
+                                        <input type="text" name="slug" id="product_slug" class="form-control bg-light"
+                                            readonly value="{{ old('slug', $product->slug) }}">
+                                        <button class="btn btn-outline-secondary" type="button" id="btn-edit-slug">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-danger" style="font-size: 11px;">* Cẩn thận: Thay đổi slug sẽ làm
+                                        thay đổi link sản phẩm!</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Mã SKU gốc</label>
@@ -276,7 +339,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Tóm tắt ngắn</label>
-                                <textarea name="summary" class="form-control" rows="3">{{ old('summary', $product->summary) }}</textarea>
+                                <textarea name="technical_specifications" class="form-control" rows="3">{{ old('technical_specifications', $product->technical_specifications) }}</textarea>
                             </div>
                             <div class="mb-0">
                                 <label class="form-label fw-semibold">Mô tả chi tiết</label>
@@ -309,7 +372,7 @@
                                             data-id="{{ $loop->index }}">
                                             <img src="{{ asset('storage/' . $img->image_path) }}">
                                             <button type="button" class="delete-btn"
-                                                onclick="this.parentElement.remove()">×</button>
+                                                onclick="if(confirm('Bạn có chắc chắn muốn xóa ảnh này không?')) this.parentElement.remove()">×</button>
                                             <input type="hidden" name="gallery_images[]" value="{{ $img->image_path }}">
                                         </div>
                                     @endforeach
@@ -322,8 +385,8 @@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                             <span class="fw-bold"><i class="fa fa-tags me-2 text-primary"></i>Biến thể</span>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="generateVariants()"><i
-                                    class="fa fa-magic"></i> Làm mới biến thể</button>
+                            {{-- <button type="button" class="btn btn-sm btn-outline-primary" onclick="generateVariants()"><i
+                                    class="fa fa-magic"></i> Làm mới biến thể</button> --}}
                         </div>
                         <div class="card-body">
                             <div id="attributes-container">
@@ -341,19 +404,22 @@
                                             onclick="applyBulk()">Áp dụng</button>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table table-sm align-middle variant-table" style="min-width: 1000px;">
+                                <div class="table-responsive variant-wrapper">
+                                    <table class="table variant-table align-middle">
                                         <thead>
-                                            <tr class="bg-light text-uppercase" style="font-size: 0.75rem;">
-                                                <th width="70" class="text-center">Ảnh</th>
-                                                <th width="180">Biến thể</th>
-                                                <th width="160">SKU</th>
-                                                <th width="140">Giá bán</th>
-                                                <th width="140">Giá gốc</th>
-                                                <th width="90" class="text-center">Kho</th>
-                                                <th width="150">Cung ứng</th>
-                                                <th width="130">Trạng thái</th>
-                                                <th width="50"></th>
+                                            <tr>
+                                                <th class="col-img text-center">Ảnh</th>
+                                                <th class="col-default text-center">Đại diện</th>
+                                                <th class="col-variant">Biến thể</th>
+                                                <th class="col-name">Tên hiển thị</th>
+                                                <th class="col-slug">Đường dẫn (Slug)</th>
+                                                <th class="col-sku">SKU</th>
+                                                <th class="col-price text-end">Giá</th>
+                                                <th class="col-price text-end">Giá gốc</th>
+                                                <th class="col-stock text-center">Kho</th>
+                                                <th class="col-select">Cung ứng</th>
+                                                <th class="col-select">Trạng thái</th>
+                                                <th class="col-action"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="variants-table-body">
@@ -375,6 +441,13 @@
                                                             id="v-input-{{ $index }}"
                                                             value="{{ $variant->variant_image }}">
                                                     </td>
+                                                    <td class="text-center">
+                                                        <div class="form-check d-flex justify-content-center">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="is_default_index" value="{{ $index }}"
+                                                                {{ $product->default_variant_id == $variant->id ? 'checked' : '' }}>
+                                                        </div>
+                                                    </td>
                                                     <td class="text-start">
                                                         <span class="variant-name-text fw-bold small">
                                                             {{ $variant->attributeValues->pluck('value')->implode(' / ') }}
@@ -382,6 +455,17 @@
                                                         {{-- Lưu lại ID các giá trị thuộc tính hiện tại --}}
                                                         <input type="hidden" name="v_values[]"
                                                             value="{{ $variant->attributeValues->pluck('id')->implode(',') }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="v_full_name[]"
+                                                            class="form-control form-control-sm"
+                                                            value="{{ $variant->variant_full_name }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="v_slug[]"
+                                                            class="form-control form-control-sm variant-slug-input"
+                                                            value="{{ $variant->slug }}"
+                                                            placeholder="Ví dụ: iphone-16-pro-max">
                                                     </td>
                                                     <td><input type="text" name="v_sku[]"
                                                             class="form-control form-control-sm"
@@ -401,7 +485,7 @@
                                                     </td>
                                                     <td>
                                                         <select name="v_availability[]" class="form-select">
-                                                            @foreach($availability as $key => $label)
+                                                            @foreach ($availability as $key => $label)
                                                                 <option value="{{ $key }}"
                                                                     {{ $variant->availability == $key ? 'selected' : '' }}>
                                                                     {{ $label }}
@@ -511,8 +595,76 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
     <script>
+        const productNameInput = document.getElementById('product_name');
+        const productSlugInput = document.getElementById('product_slug');
+        const btnEditSlug = document.getElementById('btn-edit-slug');
+        let isSlugUnlocked = false; // Mặc định là khóa
+
+        // Hàm chuyển đổi Tên -> Slug
+        function generateSlug(text) {
+            let slug = text.toLowerCase();
+            slug = slug.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // Bỏ dấu tiếng Việt
+            slug = slug.replace(/[đĐ]/g, 'd');
+            slug = slug.replace(/([^0-9a-z-\s])/g, ''); // Xóa ký tự đặc biệt
+            slug = slug.replace(/(\s+)/g, '-'); // Thay khoảng trắng bằng -
+            slug = slug.replace(/-+/g, '-'); // Lọc - dư thừa
+            return slug.trim().replace(/^-+|-+$/g, ''); // Cắt - ở đầu và cuối
+        }
+
+        // Sự kiện khi nhấn nút "Chỉnh sửa"
+        btnEditSlug.addEventListener('click', function() {
+            isSlugUnlocked = !isSlugUnlocked; // Đảo trạng thái
+
+            if (isSlugUnlocked) {
+                productSlugInput.removeAttribute('readonly');
+                productSlugInput.classList.remove('bg-light');
+                productSlugInput.focus();
+                this.innerHTML = '<i class="fa fa-save"></i>'; // Đổi icon thành lưu
+                this.classList.replace('btn-outline-secondary', 'btn-success');
+            } else {
+                productSlugInput.setAttribute('readonly', true);
+                productSlugInput.classList.add('bg-light');
+                this.innerHTML = '<i class="fa fa-edit"></i>';
+                this.classList.replace('btn-success', 'btn-outline-secondary');
+            }
+        });
+
+        // Chỉ tự động thay đổi slug khi ô slug ĐANG MỞ KHÓA
+        productNameInput.addEventListener('input', function() {
+            if (isSlugUnlocked) {
+                productSlugInput.value = generateSlug(this.value);
+            }
+        });
+
+        // Cho phép người dùng tự gõ vào ô slug nếu đang mở khóa (tự fix format khi gõ)
+        productSlugInput.addEventListener('input', function() {
+            this.value = generateSlug(this.value);
+        });
         let currentVariantTarget = null;
-        let uploadedImages = [];
+        let uploadedImages = [
+            @if ($product->images)
+                @foreach ($product->images as $img)
+                    {
+                        id: 'old_{{ $loop->index }}',
+                        url: '{{ asset('storage/' . $img->image_path) }}',
+                        path: '{{ $img->image_path }}',
+                        name: 'Old Image'
+                    },
+                @endforeach
+            @endif
+        ];
+
+        // Nếu có ảnh đại diện mà không nằm trong album, cũng nên thêm vào để chọn
+        @if ($product->featured_image)
+            if (!uploadedImages.find(i => i.path === '{{ $product->featured_image }}')) {
+                uploadedImages.push({
+                    id: 'old_feat',
+                    url: '{{ asset('storage/' . $product->featured_image) }}',
+                    path: '{{ $product->featured_image }}',
+                    name: 'Featured Image'
+                });
+            }
+        @endif
 
         // Khởi tạo TinyMCE
         tinymce.init({
@@ -540,19 +692,18 @@
                             <div class="attribute-name"><i class="fa fa-th-large"></i> ${attr.name}</div>
                             <div class="chips-container">
                                 ${attr.values.map(v => `
-                                                                <div class="chip-item">
-                                                                    <input class="attribute-checkbox" type="checkbox" value="${v.id}" 
-                                                                        data-name="${v.value}" data-sku="${v.sku_code}" data-attr-id="${attr.id}" id="v${v.id}">
-                                                                    <label class="attribute-label" for="v${v.id}">${v.value}</label>
-                                                                </div>
-                                                            `).join('')}
+                                            <div class="chip-item">
+                                                <input class="attribute-checkbox" type="checkbox" value="${v.id}" 
+                                                    data-name="${v.value}" data-sku="${v.value_code}" data-attr-id="${attr.id}" id="v${v.id}">
+                                                <label class="attribute-label" for="v${v.id}">${v.value}</label>
+                                            </div>
+                                        `).join('')}
                             </div>
                         </div>
                     `).join('');
                 });
         }
 
-        // Logic xử lý ảnh, upload, biến thể... (Copy y hệt từ bản Create của bạn sang)
         // Lưu ý: Nhớ cập nhật phần uploadedImages khi upload thành công để Modal Picker có ảnh.
         // 3. Upload ảnh qua AJAX
         document.getElementById('ajax-upload').addEventListener('change', function() {
@@ -646,19 +797,37 @@
             animation: 150
         });
 
+        function selectVariantImg(url) {
+            if (currentVariantTarget !== null) {
+                // Cập nhật giao diện hiển thị
+                const displayDiv = document.getElementById(`v-img-display-${currentVariantTarget}`);
+                displayDiv.innerHTML = `<img src="${url}">`;
+
+                // Cập nhật giá trị input ẩn để gửi lên server
+                // Lưu ý: Ta chỉ lấy phần path sau chữ 'storage/' nếu cần, 
+                // nhưng tốt nhất là server sẽ xử lý URL này.
+                document.getElementById(`v-input-${currentVariantTarget}`).value = url;
+
+                // Đóng modal
+                bootstrap.Modal.getInstance(document.getElementById('imagePickerModal')).hide();
+            }
+        }
+
         // 6. Logic Biến thể
         function openImagePicker(index) {
             currentVariantTarget = index;
             const pool = document.getElementById('picker-pool');
+
             if (uploadedImages.length === 0) {
-                pool.innerHTML = '<p class="text-center py-4">Kho ảnh trống. Hãy tải ảnh lên trước.</p>';
+                pool.innerHTML =
+                    '<p class="text-center py-4">Kho ảnh trống. Hãy tải ảnh lên trước hoặc sử dụng ảnh hiện có.</p>';
             } else {
                 pool.innerHTML = uploadedImages.map(img => `
-                        <div class="col-3 col-md-2">
-                            <div class="card p-1 cursor-pointer h-100 shadow-sm" onclick="selectVariantImg('${img.url}')">
-                                <img src="${img.url}" class="card-img-top rounded" style="height:80px; object-fit:cover">
-                            </div>
-                        </div>`).join('');
+            <div class="col-3 col-md-2">
+                <div class="card p-1 cursor-pointer h-100 shadow-sm variant-card-select" onclick="selectVariantImg('${img.url}')">
+                    <img src="${img.url}" class="card-img-top rounded" style="height:80px; object-fit:cover">
+                </div>
+            </div>`).join('');
             }
             new bootstrap.Modal(document.getElementById('imagePickerModal')).show();
         }

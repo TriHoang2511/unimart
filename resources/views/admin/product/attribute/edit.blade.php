@@ -83,10 +83,10 @@
 
                                 <div class="col-3">
                                     <label class="small fw-bold">SKU Code</label>
-                                    <input type="text" name="sku_code" value="{{ old('sku_code') }}"
+                                    <input type="text" name="value_code" value="{{ old('value_code') }}"
                                         class="form-control sku-input" placeholder="VD: TITANIUM_DESERT" required>
 
-                                    @error('sku_code')
+                                    @error('value_code')
                                         <small class="text-danger d-block">{{ $message }}</small>
                                     @enderror
                                 </div>
@@ -132,8 +132,8 @@
 
                                         {{-- Cột 2: SKU --}}
                                         <td>
-                                            <input type="text" name="sku_code" form="form-update-{{ $val->id }}"
-                                                class="form-control form-control-sm sku-input" value="{{ $val->sku_code }}"
+                                            <input type="text" name="value_code" form="form-update-{{ $val->id }}"
+                                                class="form-control form-control-sm sku-input" value="{{ $val->value_code }}"
                                                 required>
                                         </td>
 

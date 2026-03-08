@@ -77,30 +77,30 @@ class AttributeController extends Controller
     {
         $request->validate([
             'value' => 'required|string|max:255',
-            'sku_code' => 'required|string',
+            'value_code' => 'required|string',
         ], [
             'value.required' => 'Giá trị không được để trống.',
-            'sku_code.required' => 'SKU không được để trống.',
+            'value_code.required' => 'SKU không được để trống.',
         ]);
 
         // Chuẩn hóa SKU
-        $sku = strtoupper($request->sku_code);
+        $sku = strtoupper($request->value_code);
 
         // Kiểm tra trùng SKU trong cùng attribute
         if (
             AttributeValue::where('attribute_id', $attribute->id)
-                ->where('sku_code', $sku)
+                ->where('value_code', $sku)
                 ->exists()
         ) {
             return back()->withErrors([
-                'sku_code' => 'SKU này đã tồn tại trong thuộc tính.'
+                'value_code' => 'SKU này đã tồn tại trong thuộc tính.'
             ]);
         }
 
         AttributeValue::create([
             'attribute_id' => $attribute->id,
             'value' => $request->value,
-            'sku_code' => $sku,
+            'value_code' => $sku,
             'is_active' => true,
         ]);
 
@@ -114,27 +114,27 @@ class AttributeController extends Controller
     {
         $request->validate([
             'value' => 'required|string|max:255',
-            'sku_code' => 'required|string',
+            'value_code' => 'required|string',
             // 'is_active' => 'boolean',
         ]);
 
-        $sku = strtoupper($request->sku_code);
+        $sku = strtoupper($request->value_code);
 
         // Check trùng SKU (ngoại trừ chính nó)
         if (
             AttributeValue::where('attribute_id', $value->attribute_id)
-                ->where('sku_code', $sku)
+                ->where('value_code', $sku)
                 ->where('id', '!=', $value->id)
                 ->exists()
         ) {
             return back()->withErrors([
-                'sku_code' => 'SKU này đã tồn tại.'
+                'value_code' => 'SKU này đã tồn tại.'
             ]);
         }
 
         $value->update([
             'value' => $request->value,
-            'sku_code' => $sku,
+            'value_code' => $sku,
             // 'is_active' => $request->boolean('is_active'),
         ]);
 

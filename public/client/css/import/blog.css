@@ -1,0 +1,91 @@
+/*BLOG*/
+.blog-page #selling-wp {
+    margin-top: 0 !important;
+}
+
+.blog-page #list-blog-wp .section-title {
+    font-size: 21px;
+    text-transform: uppercase;
+    line-height: normal;
+    margin-bottom: 20px;
+}
+
+#list-blog-wp .list-item li {
+    padding-bottom: 30px;
+}
+
+#list-blog-wp .list-item li:last-child {
+    padding-bottom: 0;
+}
+
+/* 1. Phần tử Cha (.thumb) */
+#list-blog-wp .thumb {
+    width: 30%;
+    overflow: hidden;
+    border-radius: 5px;
+    display: block;
+    /* Đảm bảo nó là block để dễ kiểm soát kích thước */
+}
+
+/* 2. Phần tử Con (Ảnh) */
+#list-blog-wp .thumb img {
+    /* Đảm bảo ảnh lấp đầy khung cha */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* 3. Hiệu ứng Hover: Áp dụng lên ảnh khi hover vào khung cha */
+#list-blog-wp .thumb:hover img {
+    /* ✅ Áp dụng scale chỉ cho ảnh */
+    transform: scale(1.05);
+}
+
+#list-blog-wp .info {
+    width: 70%;
+    padding-left: 25px;
+}
+
+#list-blog-wp .info .title {
+    display: block;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 30px;
+    font-family: 'Roboto Regular';
+    color: rgb(33 43 54);
+    padding-bottom: 5px;
+}
+
+#list-blog-wp .info .create-date {
+    position: relative;
+    display: block;
+    font-size: 13px;
+    color: #989898;
+    padding-left: 20px;
+    padding-bottom: 5px;
+}
+
+#list-blog-wp .info .create-date:before {
+    position: absolute;
+    content: '\f017';
+    font-family: 'FontAwesome';
+    top: 0;
+    left: 0;
+    font-size: 14px;
+}
+
+#list-blog-wp .info .desc {
+    line-height: 26px;
+    color: #3f3f3f;
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -moz-line-clamp: 3;
+    -o-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -o-box-orient: vertical;
+    max-height: 100%;
+    overflow: hidden;
+}

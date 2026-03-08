@@ -73,19 +73,28 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // 1. Validate - Khớp chính xác Enum và bảng
-        $request->validate([
-            'name'           => 'required|string|max:255',
-            'category_id'    => 'required|exists:product_categories,id',
-            'sku'            => 'required|string|max:100|unique:products,sku',
-            'status'         => 'required|in:draft,published,pending,archived',
-            'v_sku.*'        => 'required|string|distinct|unique:product_variants,sku',
+        $validated = $request->validate([
+            'name'             => 'required|string|max:255',
+            'slug'             => 'nullable|string|max:255', // Thêm cái này
+            'technical_specifications' => 'nullable|string',       // Thêm cái này
+            'description'      => 'nullable|string',        // Thêm cái này
+            'category_id'      => 'required|exists:product_categories,id',
+            'sku'              => 'required|string|max:100|unique:products,sku',
+            'status'           => 'required|in:draft,published,pending,archived',
+            'is_default_index' => 'required|integer',
 
-            'v_price.*'      => 'nullable|numeric|min:0',
+            // Validate cho biến thể
+            'v_full_name'      => 'required|array|min:1',
+            'v_sku.*'          => 'required|string|distinct|unique:product_variants,sku',
+            'v_technical_specifications.*' => 'nullable|string', // Specs riêng của biến thể
+            'v_description.*'          => 'nullable|string',     // Desc riêng của biến thể
+            'v_price.*'        => 'nullable|numeric|min:0',
             'v_compare_at_price.*' => 'nullable|numeric|min:0',
-            'v_stock.*'      => 'nullable|integer|min:0',
-
+            'v_stock.*'        => 'nullable|integer|min:0',
             'v_availability.*' => 'required|in:ready,coming_soon,contact,preorder',
-            'v_status.*'     => 'required|in:0,1',
+            'v_status.*'       => 'required|in:0,1',
+            'v_values.*'       => 'nullable|string', // Cần thiết để lấy dữ liệu attribute
+            'v_image.*'        => 'nullable|string', // Cần thiết để lấy path ảnh
         ]);
 
         DB::beginTransaction();
@@ -94,14 +103,14 @@ class ProductController extends Controller
 
             // 2. Tạo Product
             $product = Product::create([
-                'product_category_id' => $request->category_id,
-                'name'                => $request->name,
-                'sku'                 => $request->sku,
-                'slug'                => $request->slug ?: Str::slug($request->name),
-                'summary'             => $request->summary,
-                'description'         => $request->description,
+                'product_category_id' => $validated['category_id'],
+                'name'                => $validated['name'],
+                'sku'                 => $validated['sku'],
+                'slug'                => $validated['slug'] ?: Str::slug($validated['name']),
+                'technical_specifications' => $validated['technical_specifications'],
+                'description'         => $validated['description'],
                 'featured_image'      => $thumbnailPath,
-                'status'              => $request->status, // Enum: draft, published...
+                'status'              => $validated['status'], // Enum: draft, published...
             ]);
 
             // 3. Gallery (Giữ nguyên logic cũ của bạn)
@@ -115,24 +124,37 @@ class ProductController extends Controller
             }
 
             // 4. Tạo Biến thể - KHỚP TÊN CỘT DATABASE
-            foreach ($request->v_sku as $index => $sku) {
-                $vImagePath = $this->moveTempFile($request->v_image[$index] ?? null);
+            foreach ($validated['v_sku'] as $index => $sku) {
+                $vImagePath = $this->moveTempFile($validated['v_image'][$index] ?? null);
 
                 $variant = $product->variants()->create([
                     'sku'              => $sku,
-                    'price'            => (float) ($request->v_price[$index] ?? 0),
-                    'compare_at_price' => (float) ($request->v_compare_at_price[$index] ?? 0),
-                    'stock_qty'        => (int) ($request->v_stock[$index] ?? 0),
+                    'variant_full_name' => $validated['v_full_name'][$index],
+                    'technical_specifications' => $validated['v_technical_specifications'][$index] ?? null,
+                    'description'              => $validated['v_description'][$index] ?? null,
+                    'slug'            => Str::slug($validated['v_full_name'][$index]),
+                    'price'            => (float) ($validated['v_price'][$index] ?? 0),
+                    'compare_at_price' => (float) ($validated['v_compare_at_price'][$index] ?? 0),
+                    'stock_qty'        => (int) ($validated['v_stock'][$index] ?? 0),
                     'variant_image'    => $vImagePath,
-                    'status'           => $request->v_status[$index],       // 1 hoặc 0
-                    'availability'     => $request->v_availability[$index], // ready, coming_soon...
+                    'status'           => $validated['v_status'][$index],       // 1 hoặc 0
+                    'availability'     => $validated['v_availability'][$index], // ready, coming_soon...
                 ]);
 
+                // KIỂM TRA: Nếu index hiện tại trùng với Radio đã chọn
+                if ($validated['is_default_index'] == $index) {
+                    $defaultVariantId = $variant->id;
+                }
+
                 // Gắn Pivot
-                $valIds = array_filter(explode(',', $request->v_values[$index]));
+                $valIds = array_filter(explode(',', $validated['v_values'][$index]));
                 if (!empty($valIds)) {
                     $variant->attributeValues()->attach($valIds);
                 }
+            }
+
+            if ($defaultVariantId) {
+                $product->update(['default_variant_id' => $defaultVariantId]);
             }
 
             DB::commit();
@@ -167,7 +189,7 @@ class ProductController extends Controller
             // SKU của Product chính: Bỏ qua ID hiện tại để không báo lỗi trùng chính nó
             'sku'            => 'required|string|max:255|unique:products,sku,' . $product->id,
             'status'         => 'required|in:draft,published,pending',
-            'summary'        => 'nullable|string|max:500',
+            'technical_specifications'        => 'nullable|string|max:500',
             'description'    => 'nullable|string',
 
             // IMAGES
@@ -180,6 +202,10 @@ class ProductController extends Controller
             // Validate SKU biến thể: Bỏ qua kiểm tra unique nếu bạn xử lý logic tay, 
             // hoặc dùng rule đặc biệt. Ở đây tạm để đơn giản để bạn tập trung logic.
             'v_sku.*'        => 'required|string|distinct',
+            'v_technical_specifications.*' => 'nullable|string',
+            'v_description.*'              => 'nullable|string',
+            'v_full_name'    => 'required|array|min:1',
+            'v_full_name.*'  => 'required|string|max:255',
             'v_price'        => 'required|array',
             'v_price.*'      => 'nullable|numeric|min:0',
             'v_compare_at_price' => 'required|array',
@@ -203,6 +229,8 @@ class ProductController extends Controller
                 'name'                => $request->name,
                 'product_category_id' => $request->category_id,
                 'sku'                 => $request->sku,
+                'technical_specifications' => $request->technical_specifications,
+                'description'              => $request->description,
                 'slug'                => $request->slug ?: Str::slug($request->name),
                 'summary'             => $request->summary,
                 'description'         => $request->description,
@@ -226,34 +254,57 @@ class ProductController extends Controller
                 }
             }
 
-            /* 4. CẬP NHẬT BIẾN THỂ (VARIANTS) THEO ID */
-            foreach ($request->v_id as $index => $vId) {
+            /* 4. CẬP NHẬT BIẾN THỂ (VARIANTS) */
+            $defaultVariantId = null;
 
-                // Tìm biến thể theo ID gửi lên
+            foreach ($request->v_id as $index => $vId) {
+                // 1. Tìm hoặc tạo mới nếu chưa có ID (trường hợp admin thêm biến thể mới khi edit)
                 $variant = \App\Models\ProductVariant::find($vId);
 
+                // Xử lý ảnh: Nếu có ảnh mới thì move, không thì giữ ảnh cũ của variant
+                $vImagePath = $request->v_image[$index]
+                    ? $this->moveTempFile($request->v_image[$index])
+                    : ($variant ? $variant->variant_image : null);
+
+                $dataVariant = [
+                    'sku'               => $request->v_sku[$index],
+                    'technical_specifications' => $request->v_technical_specifications[$index] ?? null,
+                    'description'              => $request->v_description[$index] ?? null,
+                    'variant_full_name' => $request->v_full_name[$index],
+                    'slug'              => $request->v_slug[$index]
+                        ? Str::slug($request->v_slug[$index])
+                        : Str::slug($request->v_full_name[$index]),
+                    'price'             => (float) ($request->v_price[$index] ?? 0),
+                    'compare_at_price'  => (float) ($request->v_compare_at_price[$index] ?? 0),
+                    'stock_qty'         => (int) ($request->v_stock[$index] ?? 0),
+                    'variant_image'     => $vImagePath,
+                    'availability'      => $request->v_availability[$index],
+                    'status'            => $request->v_status[$index],
+                ];
+
                 if ($variant) {
-                    // Xử lý ảnh biến thể: Nếu ko chọn mới thì lấy lại ảnh cũ
-                    $vImagePath = $request->v_image[$index] ? $this->moveTempFile($request->v_image[$index]) : $variant->variant_image;
-
-                    $variant->update([
-                        'sku'              => $request->v_sku[$index],
-                        'price'            => (float) ($request->v_price[$index] ?? 0),
-                        'compare_at_price' => (float) ($request->v_compare_at_price[$index] ?? 0),
-                        'stock_qty'        => (int) ($request->v_stock[$index] ?? 0),
-                        'variant_image'    => $vImagePath,
-                        'availability'     => $request->v_availability[$index],
-                        'status'           => $request->v_status[$index],
-                    ]);
-
-                    // Cập nhật thuộc tính (Pivot) bằng SYNC
-                    // sync() sẽ tự động xóa cái cũ, thêm cái mới, giữ lại cái không đổi.
-                    $attributeValueIds = array_filter(
-                        array_map('intval', explode(',', $request->v_values[$index]))
-                    );
-
-                    $variant->attributeValues()->sync($attributeValueIds);
+                    // Cập nhật biến thể cũ
+                    $variant->update($dataVariant);
+                } else {
+                    // Tạo biến thể mới hoàn toàn (nếu admin thêm dòng mới lúc edit)
+                    $variant = $product->variants()->create($dataVariant);
                 }
+
+                // 2. Kiểm tra đây có phải là biến thể được chọn làm mặc định không?
+                if ($request->is_default_index == $index) {
+                    $defaultVariantId = $variant->id;
+                }
+
+                // 3. Cập nhật Pivot (Attribute Values)
+                $attributeValueIds = array_filter(
+                    array_map('intval', explode(',', $request->v_values[$index]))
+                );
+                $variant->attributeValues()->sync($attributeValueIds);
+            }
+
+            // 5. CHỐT SỔ HOA HẬU: Cập nhật lại cho Product cha
+            if ($defaultVariantId) {
+                $product->update(['default_variant_id' => $defaultVariantId]);
             }
 
             DB::commit();
@@ -340,8 +391,6 @@ class ProductController extends Controller
         $categories = $this->data_tree($categories);
         return view('admin.product.create', compact('categories'));
     }
-
-
 
     public function destroy(Product $product)
     {
